@@ -105,6 +105,39 @@ Assets/
         └── MetricsRecorder.cs
 ```
 
+## TODO / Roadmap
+
+### Environment
+- [ ] Expand terrain size (currently 50×50, consider 100×100 or larger)
+- [ ] Add obstacles (rocks, trees) with Obstacle tag
+- [ ] Add safe zones (tree hollows, bushes) with Safezone tag
+- [ ] Add terrain textures (grass, dirt, rock)
+- [ ] Add trees using Unity Terrain tree system
+
+### Agent & RL
+- [ ] Multi-agent expansion (3–5 squirrels in same scene)
+- [ ] Fear mechanic: nearby squirrels increase fear, triggering safe-zone seeking
+- [ ] Memory (LSTM): add to squirrel_ppo.yaml so agent remembers past positions
+- [ ] Increase vision radius (currently 10m) to match larger terrain
+- [ ] Rule-based baseline agent for comparison
+
+### Training & Experiments
+- [ ] Continue training run4 to 1M steps (currently ~400k)
+- [ ] Run experiments with different acorn densities
+- [ ] Run experiments with different number of agents
+- [ ] Record metrics: acorns collected, travel distance, collisions, energy use
+
+### Visualization & Demo
+- [ ] Add squirrel animations (walk/idle cycles)
+- [ ] Add visual indicators for hunger/energy/fear (UI bars or color changes)
+- [ ] Record demo video of trained behavior
+- [ ] TensorBoard reward curve plots for report
+
+### Report
+- [ ] Methods section: environment design, observation space, reward function
+- [ ] Results section: training curves, behavior analysis
+- [ ] Comparison: RL vs rule-based baseline
+
 ## Credits
 
 Squirrel 3D model: "Low poly squirrel" by ClydeXYZ on Sketchfab (CC Attribution)

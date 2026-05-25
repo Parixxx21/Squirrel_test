@@ -1,0 +1,80 @@
+
+            ┐  ╖
+        ╓╖╬│╡  ││╬╖╖
+    ╓╖╬│││││┘  ╬│││││╬╖
+ ╖╬│││││╬╜        ╙╬│││││╖╖                               ╗╗╗
+ ╬╬╬╬╖││╦╖        ╖╬││╗╣╣╣╬      ╟╣╣╬    ╟╣╣╣             ╜╜╜  ╟╣╣
+ ╬╬╬╬╬╬╬╬╖│╬╖╖╓╬╪│╓╣╣╣╣╣╣╣╬      ╟╣╣╬    ╟╣╣╣ ╒╣╣╖╗╣╣╣╗   ╣╣╣ ╣╣╣╣╣╣ ╟╣╣╖   ╣╣╣
+ ╬╬╬╬┐  ╙╬╬╬╬│╓╣╣╣╝╜  ╫╣╣╣╬      ╟╣╣╬    ╟╣╣╣ ╟╣╣╣╙ ╙╣╣╣  ╣╣╣ ╙╟╣╣╜╙  ╫╣╣  ╟╣╣
+ ╬╬╬╬┐     ╙╬╬╣╣      ╫╣╣╣╬      ╟╣╣╬    ╟╣╣╣ ╟╣╣╬   ╣╣╣  ╣╣╣  ╟╣╣     ╣╣╣┌╣╣╜
+ ╬╬╬╜       ╬╬╣╣      ╙╝╣╣╬      ╙╣╣╣╗╖╓╗╣╣╣╜ ╟╣╣╬   ╣╣╣  ╣╣╣  ╟╣╣╦╓    ╣╣╣╣╣
+ ╙   ╓╦╖    ╬╬╣╣   ╓╗╗╖            ╙╝╣╣╣╣╝╜   ╘╝╝╜   ╝╝╝  ╝╝╝   ╙╣╣╣    ╟╣╣╣
+   ╩╬╬╬╬╬╬╦╦╬╬╣╣╗╣╣╣╣╣╣╣╝                                             ╫╣╣╣╣
+      ╙╬╬╬╬╬╬╬╣╣╣╣╣╣╝╜
+          ╙╬╬╬╣╣╣╜
+             ╙
+        
+ Version information:
+  ml-agents: 1.2.0.dev0,
+  ml-agents-envs: 1.2.0.dev0,
+  Communicator API: 1.5.0,
+  PyTorch: 2.8.0
+[ERROR] UnityEnvironment worker 0: environment raised an unexpected exception.
+Traceback (most recent call last):
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/mlagents_envs/rpc_communicator.py", line 87, in check_port
+    s.bind(("localhost", port))
+OSError: [Errno 48] Address already in use
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/mlagents/trainers/subprocess_env_manager.py", line 163, in worker
+    env = env_factory(worker_id, side_channels)
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/mlagents/trainers/learn.py", line 191, in create_unity_environment
+    return UnityEnvironment(
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/mlagents_envs/environment.py", line 189, in __init__
+    self._communicator = self._get_communicator(worker_id, base_port, timeout_wait)
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/mlagents_envs/environment.py", line 267, in _get_communicator
+    return RpcCommunicator(worker_id, base_port, timeout_wait)
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/mlagents_envs/rpc_communicator.py", line 51, in __init__
+    self.create_server()
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/mlagents_envs/rpc_communicator.py", line 57, in create_server
+    self.check_port(self.port)
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/mlagents_envs/rpc_communicator.py", line 89, in check_port
+    raise UnityWorkerInUseException(self.worker_id)
+mlagents_envs.exception.UnityWorkerInUseException: Couldn't start socket communication because worker number 0 is still in use. You may need to manually close a previously opened environment or use a different worker number.
+Exception ignored in atexit callback: <bound method UnityEnvironment._close of <mlagents_envs.environment.UnityEnvironment object at 0x105697190>>
+Traceback (most recent call last):
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/mlagents_envs/environment.py", line 439, in _close
+    self._communicator.close()
+AttributeError: 'UnityEnvironment' object has no attribute '_communicator'
+Traceback (most recent call last):
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/bin/mlagents-learn", line 6, in <module>
+    sys.exit(main())
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/mlagents/trainers/learn.py", line 270, in main
+    run_cli(parse_command_line())
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/mlagents/trainers/learn.py", line 266, in run_cli
+    run_training(run_seed, options, num_areas)
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/mlagents/trainers/learn.py", line 138, in run_training
+    tc.start_learning(env_manager)
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/mlagents_envs/timers.py", line 305, in wrapped
+    return func(*args, **kwargs)
+  File Exception in thread Thread-1 (_serve):
+Traceback (most recent call last):
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/threading.py", line 953, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/grpc/_server.py", line 1004, in _serve
+    if not _process_event_and_continue(state, event):
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/grpc/_server.py", line 968, in _process_event_and_continue
+    rpc_state, rpc_future = _handle_call(event, state.generic_handlers,
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/grpc/_server.py", line 856, in _handle_call
+    return _handle_with_method_handler(rpc_event, method_handler,
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/grpc/_server.py", line 829, in _handle_with_method_handler
+    return state, _handle_unary_unary(rpc_event, state,
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/site-packages/grpc/_server.py", line 716, in _handle_unary_unary
+    return thread_pool.submit(_unary_response_in_pool, rpc_event, state,
+  File "/Users/effiewu0628/miniconda3/envs/mlagents/lib/python3.10/concurrent/futures/thread.py", line 169, in submit
+    raise RuntimeError('cannot schedule new futures after '
+RuntimeError: cannot schedule new futures after interpreter shutdown

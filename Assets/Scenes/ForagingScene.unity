@@ -369,7 +369,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: f44a8c16a0e3e4a1b8bbcb5a9da6e09f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: f44a8c16a0e3e4a1b8bbcb5a9da6e09f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -582,7 +582,7 @@ MonoBehaviour:
   acornPrefab: {fileID: 8791890648573958177, guid: 3971100be7fea4aa08b6e12f692c7124, type: 3}
   terrain: {fileID: 18928678}
   maxAcorns: 15
-  spawnRadius: 25
+  spawnRadius: 45
   respawnDelay: 5
   heightOffset: 0.3
 --- !u!4 &1168324958
@@ -769,7 +769,7 @@ MonoBehaviour:
   spawnRadius: 20
   moveSpeed: 3
   turnSpeed: 150
-  visionRadius: 8
+  visionRadius: 20
   hungerRate: 0.001
   energyDrainRate: 0.002
   energyRestoreRate: 0.005

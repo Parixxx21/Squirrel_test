@@ -23,6 +23,10 @@ __pycache__/
 *.pyo
 .env
 
+# Unity recovery & crash logs
+Assets/_Recovery/
+mono_crash.*.json
+
 # macOS
 .DS_Store
 *.DS_Store

@@ -21,7 +21,7 @@ public class SquirrelAgent : Agent
     public float turnSpeed = 150f;
 
     [Header("Vision")]
-    public float visionRadius = 10f;
+    public float visionRadius = 20f;
 
     [Header("Rates")]
     public float hungerRate        = 0.0003f;  // slower hunger = longer episodes
@@ -67,8 +67,10 @@ public class SquirrelAgent : Agent
 
     private Vector3 GetRandomSpawnPosition()
     {
-        float x = Random.Range(10f, 40f);
-        float z = Random.Range(10f, 40f);
+        float margin = 5f;
+        float size   = terrain != null ? terrain.terrainData.size.x : 50f;
+        float x = Random.Range(margin, size - margin);
+        float z = Random.Range(margin, size - margin);
         float y = terrain != null
             ? terrain.SampleHeight(new Vector3(x, 0f, z)) + 1f
             : 3f;
@@ -227,7 +229,7 @@ public class SquirrelAgent : Agent
 
     private float DistanceToNearestAcorn()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, 50f);
+        Collider[] hits = Physics.OverlapSphere(transform.position, 200f);
         float minDist = -1f;
         foreach (var c in hits)
         {

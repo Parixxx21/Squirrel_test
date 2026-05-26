@@ -3,7 +3,7 @@ using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 
-// Observation space: 39 floats
+// Observation space: 30 floats
 // Actions: Continuous[0]=forward, Continuous[1]=turn  |  Discrete[0]: 0=move 1=rest
 public class SquirrelAgent : Agent
 {
@@ -24,7 +24,7 @@ public class SquirrelAgent : Agent
     public float visionRadius = 20f;
 
     [Header("Map Knowledge")]
-    public int maxSafeZonesObserved = 9;
+    public int maxSafeZonesObserved = 6;
     public float safeZoneDistanceNormalization = 75f;
 
     [Header("Rates")]
@@ -104,7 +104,7 @@ public class SquirrelAgent : Agent
         // Nearest other squirrel (3)
         AddNearestByTag("Squirrel", sensor);
 
-        // Known safe zones: local dir + normalized dist for each slot (27)
+        // Known safe zones: local dir + normalized dist for each slot (18)
         AddKnownSafeZones(sensor);
     }
 

@@ -770,7 +770,7 @@ MonoBehaviour:
   moveSpeed: 3
   turnSpeed: 150
   visionRadius: 20
-  maxSafeZonesObserved: 9
+  maxSafeZonesObserved: 6
   safeZoneDistanceNormalization: 75
   hungerRate: 0.001
   energyDrainRate: 0.002
@@ -789,7 +789,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.ML-Agents::Unity.MLAgents.Policies.BehaviorParameters
   m_BrainParameters:
-    VectorObservationSize: 39
+    VectorObservationSize: 30
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2

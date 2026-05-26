@@ -17,7 +17,6 @@ public class SafeZone : MonoBehaviour
     public bool applyNaturalColors = true;
     public Color bushColor = new Color(0.22f, 0.48f, 0.18f, 1f);
     public Color logColor = new Color(0.34f, 0.2f, 0.1f, 1f);
-    public Color rockColor = new Color(0.42f, 0.43f, 0.39f, 1f);
     public Color leafColor = new Color(0.18f, 0.42f, 0.14f, 1f);
     public Color barkColor = new Color(0.38f, 0.24f, 0.13f, 1f);
 
@@ -46,6 +45,7 @@ public class SafeZone : MonoBehaviour
 
     void OnValidate()
     {
+        if (Application.isPlaying) return;
         ConfigureZone();
     }
 
@@ -98,7 +98,7 @@ public class SafeZone : MonoBehaviour
             visual = visualObject != null ? visualObject.transform : null;
         }
 
-        if (visual != null)
+        if (visual != null && !Application.isPlaying)
             visual.position = transform.position;
 
         return visual;
@@ -116,11 +116,6 @@ public class SafeZone : MonoBehaviour
         if (TryGetVisualName(normalizedName, "SafeZone_Log_", "LogVisual_", out string logVisualName))
         {
             return logVisualName;
-        }
-
-        if (TryGetVisualName(normalizedName, "SafeZone_Rock_", "RockVisual_", out string rockVisualName))
-        {
-            return rockVisualName;
         }
 
         return null;
@@ -145,11 +140,9 @@ public class SafeZone : MonoBehaviour
 
         Color tint = visual.name.Contains("Log")
             ? logColor
-            : visual.name.Contains("Rock")
-                ? rockColor
-                : visual.name.Contains("Bush")
-                    ? bushColor
-                    : leafColor;
+            : visual.name.Contains("Bush")
+                ? bushColor
+                : leafColor;
         Renderer[] renderers = visual.GetComponentsInChildren<Renderer>();
 
         foreach (Renderer visualRenderer in renderers)
@@ -234,6 +227,13 @@ public class SafeZone : MonoBehaviour
     {
         Transform marker = transform.Find(MarkerName);
 
+        if (Application.isPlaying)
+        {
+            if (marker != null)
+                marker.gameObject.SetActive(false);
+            return;
+        }
+
         if (!showMarker)
         {
             if (marker != null)
@@ -243,6 +243,8 @@ public class SafeZone : MonoBehaviour
 
         if (marker == null)
         {
+            if (Application.isPlaying) return;
+
             GameObject markerObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             markerObject.name = MarkerName;
             markerObject.transform.SetParent(transform, false);
@@ -304,6 +306,9 @@ public class SafeZone : MonoBehaviour
 
     private void EnsureDefaultSafeZones()
     {
+        if (Application.isPlaying)
+            return;
+
         if (isEnsuringDefaultSafeZones || !gameObject.name.StartsWith("SafeZone_Bush_", StringComparison.OrdinalIgnoreCase))
             return;
 
@@ -322,36 +327,29 @@ public class SafeZone : MonoBehaviour
         EnsureLogSafeZone(root, "SafeZone_Log_1", "LogVisual_1", TerrainPoint(0.12f, 0.82f), 0f, new Vector3(1.25f, 6.2f, 1.25f));
         EnsureLogSafeZone(root, "SafeZone_Log_2", "LogVisual_2", TerrainPoint(0.88f, 0.78f), 90f, new Vector3(1.35f, 6.8f, 1.35f));
 
-        EnsureRockSafeZone(root, "SafeZone_Rock_1", "RockVisual_1", TerrainPoint(0.08f, 0.34f), 12f, new Vector3(1.5f, 0.9f, 1.25f));
-        EnsureRockSafeZone(root, "SafeZone_Rock_2", "RockVisual_2", TerrainPoint(0.30f, 0.30f), 48f, new Vector3(1.35f, 0.8f, 1.55f));
-        EnsureRockSafeZone(root, "SafeZone_Rock_3", "RockVisual_3", TerrainPoint(0.56f, 0.28f), 95f, new Vector3(1.65f, 0.95f, 1.3f));
         isEnsuringDefaultSafeZones = false;
     }
 
     private void RemoveExtraSafeZones(Transform root)
     {
-        RemoveSafeZone(root, "SafeZone_Bush_5");
-        RemoveSafeZone(root, "SafeZone_Bush_6");
-        RemoveSafeZone(root, "SafeZone_Bush_7");
-        RemoveSafeZone(root, "SafeZone_Bush_8");
-        RemoveSafeZone(root, "SafeZone_Bush_9");
-        RemoveSafeZone(root, "SafeZone_Log_3");
-        RemoveSafeZone(root, "SafeZone_Log_4");
-        RemoveSafeZone(root, "SafeZone_Log_5");
-        RemoveSafeZone(root, "SafeZone_Rock_4");
-        RemoveSafeZone(root, "SafeZone_Rock_5");
-        RemoveSafeZone(root, "SafeZone_Rock_6");
+        for (int i = root.childCount - 1; i >= 0; i--)
+        {
+            Transform child = root.GetChild(i);
+            if (!child.name.StartsWith("SafeZone_", StringComparison.OrdinalIgnoreCase)) continue;
+            if (IsDefaultSafeZone(child.name)) continue;
+
+            DestroyImmediate(child.gameObject);
+        }
     }
 
-    private void RemoveSafeZone(Transform root, string safeZoneName)
+    private static bool IsDefaultSafeZone(string safeZoneName)
     {
-        Transform safeZone = root.Find(safeZoneName);
-        if (safeZone == null) return;
-
-        if (Application.isPlaying)
-            Destroy(safeZone.gameObject);
-        else
-            DestroyImmediate(safeZone.gameObject);
+        return string.Equals(safeZoneName, "SafeZone_Bush_1", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(safeZoneName, "SafeZone_Bush_2", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(safeZoneName, "SafeZone_Bush_3", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(safeZoneName, "SafeZone_Bush_4", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(safeZoneName, "SafeZone_Log_1", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(safeZoneName, "SafeZone_Log_2", StringComparison.OrdinalIgnoreCase);
     }
 
     private void EnsureBushSafeZone(Transform root, string safeZoneName, string visualName, Vector3 position, Vector3 visualScale)
@@ -428,45 +426,6 @@ public class SafeZone : MonoBehaviour
         if (safeZone.GetComponent<SafeZone>() == null)
             safeZone.gameObject.AddComponent<SafeZone>();
     }
-
-    private void EnsureRockSafeZone(Transform root, string safeZoneName, string visualName, Vector3 position, float yaw, Vector3 visualScale)
-    {
-        Transform safeZone = root.Find(safeZoneName);
-        if (safeZone == null)
-        {
-            GameObject safeZoneObject = new GameObject(safeZoneName);
-            safeZoneObject.transform.SetParent(root, false);
-            safeZone = safeZoneObject.transform;
-        }
-
-        safeZone.gameObject.tag = "Safezone";
-        safeZone.position = SampleTerrainPosition(position);
-        safeZone.rotation = Quaternion.identity;
-        safeZone.localScale = Vector3.one;
-
-        SphereCollider trigger = safeZone.GetComponent<SphereCollider>();
-        if (trigger == null && safeZone.GetComponent<BoxCollider>() == null)
-            trigger = safeZone.gameObject.AddComponent<SphereCollider>();
-
-        if (trigger != null)
-        {
-            trigger.isTrigger = true;
-            trigger.radius = 3f;
-        }
-
-        Transform visual = safeZone.Find(visualName);
-        if (visual == null)
-            visual = CreateRockVisual(visualName, safeZone);
-
-        ConfigureRockVisual(visual, visualName);
-        visual.localPosition = Vector3.zero;
-        visual.localRotation = Quaternion.Euler(0f, yaw, 0f);
-        visual.localScale = visualScale;
-
-        if (safeZone.GetComponent<SafeZone>() == null)
-            safeZone.gameObject.AddComponent<SafeZone>();
-    }
-
 
     private Vector3 SampleTerrainPosition(Vector3 position)
     {
@@ -589,154 +548,6 @@ public class SafeZone : MonoBehaviour
         return visualObject.transform;
     }
 
-    private Transform CreateRockVisual(string visualName, Transform parent)
-    {
-        GameObject visualObject = new GameObject(visualName);
-        visualObject.transform.SetParent(parent, false);
-        ConfigureRockVisual(visualObject.transform, visualName);
-        return visualObject.transform;
-    }
-
-    private void ConfigureRockVisual(Transform visual, string visualName)
-    {
-        Collider rootCollider = visual.GetComponent<Collider>();
-        if (rootCollider != null)
-        {
-            if (Application.isPlaying)
-                Destroy(rootCollider);
-            else
-                DestroyImmediate(rootCollider);
-        }
-
-        MeshRenderer rootRenderer = visual.GetComponent<MeshRenderer>();
-        if (rootRenderer != null)
-        {
-            if (Application.isPlaying)
-                Destroy(rootRenderer);
-            else
-                DestroyImmediate(rootRenderer);
-        }
-
-        MeshFilter rootFilter = visual.GetComponent<MeshFilter>();
-        if (rootFilter != null)
-        {
-            if (Application.isPlaying)
-                Destroy(rootFilter);
-            else
-                DestroyImmediate(rootFilter);
-        }
-
-        EnsureRockPiece(visual, $"{visualName}_Core", new Vector3(0f, 0.28f, 0f), Quaternion.Euler(-4f, 28f, 7f), new Vector3(1.3f, 0.85f, 1.1f), 11);
-        EnsureRockPiece(visual, $"{visualName}_SideA", new Vector3(0.42f, 0.18f, -0.22f), Quaternion.Euler(5f, -20f, -6f), new Vector3(0.85f, 0.55f, 0.75f), 23);
-        EnsureRockPiece(visual, $"{visualName}_SideB", new Vector3(-0.36f, 0.14f, 0.28f), Quaternion.Euler(-7f, 44f, 4f), new Vector3(0.7f, 0.48f, 0.82f), 37);
-    }
-
-    private void EnsureRockPiece(Transform parent, string pieceName, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, int seed)
-    {
-        Transform piece = parent.Find(pieceName);
-        GameObject pieceObject;
-
-        if (piece == null)
-        {
-            pieceObject = new GameObject(pieceName);
-            pieceObject.transform.SetParent(parent, false);
-        }
-        else
-        {
-            pieceObject = piece.gameObject;
-        }
-
-        pieceObject.transform.localPosition = localPosition;
-        pieceObject.transform.localRotation = localRotation;
-        pieceObject.transform.localScale = localScale;
-
-        MeshFilter meshFilter = pieceObject.GetComponent<MeshFilter>();
-        if (meshFilter == null)
-            meshFilter = pieceObject.AddComponent<MeshFilter>();
-
-        MeshRenderer meshRenderer = pieceObject.GetComponent<MeshRenderer>();
-        if (meshRenderer == null)
-            meshRenderer = pieceObject.AddComponent<MeshRenderer>();
-
-        Mesh mesh = meshFilter.sharedMesh;
-        if (mesh == null || mesh.name != $"IrregularRock_{seed}")
-            meshFilter.sharedMesh = CreateIrregularRockMesh(seed);
-
-        meshRenderer.sharedMaterial = CreateRockMaterial();
-    }
-
-    private Mesh CreateIrregularRockMesh(int seed)
-    {
-        const int sides = 10;
-        Vector3[] vertices = new Vector3[sides * 3 + 2];
-        int bottomCenter = sides * 3;
-        int topCenter = bottomCenter + 1;
-
-        System.Random random = new System.Random(seed);
-
-        for (int i = 0; i < sides; i++)
-        {
-            float angle = i * Mathf.PI * 2f / sides;
-            float bottomRadius = RandomRange(random, 0.72f, 1.05f);
-            float middleRadius = RandomRange(random, 0.85f, 1.18f);
-            float topRadius = RandomRange(random, 0.42f, 0.72f);
-            float topOffsetX = RandomRange(random, -0.12f, 0.12f);
-            float topOffsetZ = RandomRange(random, -0.12f, 0.12f);
-
-            Vector3 direction = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
-            vertices[i] = new Vector3(direction.x * bottomRadius, 0f, direction.z * bottomRadius);
-            vertices[sides + i] = new Vector3(direction.x * middleRadius, RandomRange(random, 0.38f, 0.62f), direction.z * middleRadius);
-            vertices[sides * 2 + i] = new Vector3(direction.x * topRadius + topOffsetX, RandomRange(random, 0.82f, 1.08f), direction.z * topRadius + topOffsetZ);
-        }
-
-        vertices[bottomCenter] = new Vector3(0f, -0.04f, 0f);
-        vertices[topCenter] = new Vector3(0.06f, 1.05f, -0.04f);
-
-        int[] triangles = new int[sides * 18];
-        int index = 0;
-
-        for (int i = 0; i < sides; i++)
-        {
-            int next = (i + 1) % sides;
-            index = AddQuad(triangles, index, i, next, sides + next, sides + i);
-            index = AddQuad(triangles, index, sides + i, sides + next, sides * 2 + next, sides * 2 + i);
-
-            triangles[index++] = bottomCenter;
-            triangles[index++] = next;
-            triangles[index++] = i;
-
-            triangles[index++] = topCenter;
-            triangles[index++] = sides * 2 + i;
-            triangles[index++] = sides * 2 + next;
-        }
-
-        Mesh mesh = new Mesh
-        {
-            name = $"IrregularRock_{seed}",
-            vertices = vertices,
-            triangles = triangles
-        };
-        mesh.RecalculateNormals();
-        mesh.RecalculateBounds();
-        return mesh;
-    }
-
-    private static int AddQuad(int[] triangles, int index, int a, int b, int c, int d)
-    {
-        triangles[index++] = a;
-        triangles[index++] = b;
-        triangles[index++] = c;
-        triangles[index++] = a;
-        triangles[index++] = c;
-        triangles[index++] = d;
-        return index;
-    }
-
-    private static float RandomRange(System.Random random, float min, float max)
-    {
-        return Mathf.Lerp(min, max, (float)random.NextDouble());
-    }
-
     private Material CreateLogMaterial()
     {
         Material material = new Material(FindUsableShader())
@@ -779,21 +590,6 @@ public class SafeZone : MonoBehaviour
             material.SetColor("_BaseColor", bushColor);
         else
             material.color = bushColor;
-
-        return material;
-    }
-
-    private Material CreateRockMaterial()
-    {
-        Material material = new Material(FindUsableShader())
-        {
-            name = "Generated Rock Material"
-        };
-
-        if (material.HasProperty("_BaseColor"))
-            material.SetColor("_BaseColor", rockColor);
-        else
-            material.color = rockColor;
 
         return material;
     }

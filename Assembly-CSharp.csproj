@@ -43,12 +43,13 @@
     <UnityVersion>6000.4.6f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Analyzer Include="/Users/lylaliu/.vscode/extensions/visualstudiotoolsforunity.vstuc-1.2.2/Analyzers/Microsoft.Unity.Analyzers.dll" />
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/Resources/BuildPipeline/Unity.SourceGenerators/Unity.SourceGenerators.dll" />
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/Resources/BuildPipeline/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll" />
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/Resources/BuildPipeline/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
-    <Analyzer Include="/Applications/Unity/275_Project/Library/PackageCache/com.unity.ai.inference@9a123aee5df7/Runtime/Core/SourceGenerator/SourceGenerators.dll" />
-    <Analyzer Include="/Applications/Unity/275_Project/Library/PackageCache/com.unity.dt.app-ui@8ac7e730dd5d/Runtime/SourceGenerators/netstandard2.0/EnumToLowerCase.dll" />
-    <Analyzer Include="/Applications/Unity/275_Project/Library/PackageCache/com.unity.dt.app-ui@8ac7e730dd5d/Runtime/MVVM/SourceGenerators/netstandard2.0/MVVMSourceGenerators.dll" />
+    <Analyzer Include="/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.ai.inference@9a123aee5df7/Runtime/Core/SourceGenerator/SourceGenerators.dll" />
+    <Analyzer Include="/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.dt.app-ui@8ac7e730dd5d/Runtime/SourceGenerators/netstandard2.0/EnumToLowerCase.dll" />
+    <Analyzer Include="/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.dt.app-ui@8ac7e730dd5d/Runtime/MVVM/SourceGenerators/netstandard2.0/MVVMSourceGenerators.dll" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Scripts/Agents/SquirrelAnimator.cs" />
@@ -1179,16 +1180,16 @@
       <HintPath>Library/ScriptAssemblies/Unity.Rendering.LightTransport.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="glTFast.Editor">
+      <HintPath>Library/ScriptAssemblies/glTFast.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.AI.Navigation">
       <HintPath>Library/ScriptAssemblies/Unity.AI.Navigation.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
       <HintPath>Library/ScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="glTFast.Editor">
-      <HintPath>Library/ScriptAssemblies/glTFast.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.VisualScripting.SettingsProvider.Editor">

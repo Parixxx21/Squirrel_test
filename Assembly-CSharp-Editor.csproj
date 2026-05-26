@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets/TutorialInfo/Scripts/Editor/ReadmeEditor.cs" />
+     <Compile Include="Assets/Scripts/Editor/SafeZoneSceneBootstrapper.cs" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/Localization/cm-help.zh-Hans.txt" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/Localization/images.ja.txt" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/Localization/i3.es.txt" />

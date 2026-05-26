@@ -3,7 +3,7 @@ using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 
-// Observation space: 12 floats
+// Observation space: 39 floats
 // Actions: Continuous[0]=forward, Continuous[1]=turn  |  Discrete[0]: 0=move 1=rest
 public class SquirrelAgent : Agent
 {
@@ -23,6 +23,10 @@ public class SquirrelAgent : Agent
     [Header("Vision")]
     public float visionRadius = 20f;
 
+    [Header("Map Knowledge")]
+    public int maxSafeZonesObserved = 9;
+    public float safeZoneDistanceNormalization = 75f;
+
     [Header("Rates")]
     public float hungerRate        = 0.0003f;  // slower hunger = longer episodes
     public float energyDrainRate   = 0.001f;
@@ -34,6 +38,7 @@ public class SquirrelAgent : Agent
     private bool isInSafeZone;
     private Vector3 lastPosition;
     private float prevDistToAcorn = -1f;
+    private Transform[] knownSafeZones = new Transform[0];
 
     // Public metrics read by MetricsRecorder
     public int   AcornsCollected { get; private set; }
@@ -44,6 +49,7 @@ public class SquirrelAgent : Agent
     {
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        RefreshKnownSafeZones();
     }
 
     public override void OnEpisodeBegin()
@@ -56,6 +62,7 @@ public class SquirrelAgent : Agent
         CollisionCount  = 0;
         isResting       = false;
         prevDistToAcorn = -1f;
+        RefreshKnownSafeZones();
 
         // Reset position to a random point on the terrain
         Vector3 spawnPos = GetRandomSpawnPosition();
@@ -96,6 +103,49 @@ public class SquirrelAgent : Agent
 
         // Nearest other squirrel (3)
         AddNearestByTag("Squirrel", sensor);
+
+        // Known safe zones: local dir + normalized dist for each slot (27)
+        AddKnownSafeZones(sensor);
+    }
+
+    private void RefreshKnownSafeZones()
+    {
+        GameObject[] safeZoneObjects = GameObject.FindGameObjectsWithTag("Safezone");
+        System.Array.Sort(safeZoneObjects, (a, b) => string.CompareOrdinal(a.name, b.name));
+
+        int count = Mathf.Min(maxSafeZonesObserved, safeZoneObjects.Length);
+        knownSafeZones = new Transform[count];
+
+        for (int i = 0; i < count; i++)
+            knownSafeZones[i] = safeZoneObjects[i].transform;
+    }
+
+    private void AddKnownSafeZones(VectorSensor sensor)
+    {
+        for (int i = 0; i < maxSafeZonesObserved; i++)
+        {
+            Transform safeZone = i < knownSafeZones.Length ? knownSafeZones[i] : null;
+
+            if (safeZone == null)
+            {
+                sensor.AddObservation(0f);
+                sensor.AddObservation(0f);
+                sensor.AddObservation(1f);
+                continue;
+            }
+
+            Vector3 toSafeZone = safeZone.position - transform.position;
+            Vector3 flatDirection = new Vector3(toSafeZone.x, 0f, toSafeZone.z);
+            float distance = flatDirection.magnitude;
+
+            Vector3 localDir = distance > 0.001f
+                ? transform.InverseTransformDirection(flatDirection.normalized)
+                : Vector3.zero;
+
+            sensor.AddObservation(localDir.x);
+            sensor.AddObservation(localDir.z);
+            sensor.AddObservation(Mathf.Clamp01(distance / safeZoneDistanceNormalization));
+        }
     }
 
     private void AddNearestByTag(string tag, VectorSensor sensor)

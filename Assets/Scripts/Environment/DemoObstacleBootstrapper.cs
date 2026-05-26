@@ -2,6 +2,7 @@ using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 
@@ -10,10 +11,13 @@ public static class DemoObstacleBootstrapper
 {
     private const string RootName = "ObstacleField";
     private const int Seed = 275;
+    private static bool ensureQueued;
 
     static DemoObstacleBootstrapper()
     {
-        EditorApplication.delayCall += EnsureObstacleField;
+        QueueEnsureObstacleField();
+        EditorSceneManager.sceneOpened += (_, _) => QueueEnsureObstacleField();
+        EditorApplication.playModeStateChanged += _ => QueueEnsureObstacleField();
     }
 
     [MenuItem("CS275/Obstacles/Rebuild Random Obstacle Field")]
@@ -26,13 +30,60 @@ public static class DemoObstacleBootstrapper
         CreateObstacleField();
     }
 
-    private static void EnsureObstacleField()
+    [DidReloadScripts]
+    private static void OnScriptsReloaded()
     {
+        QueueEnsureObstacleField();
+    }
+
+    private static void QueueEnsureObstacleField()
+    {
+        ensureQueued = true;
+        EditorApplication.update -= TryEnsureObstacleField;
+        EditorApplication.update += TryEnsureObstacleField;
+    }
+
+    private static void TryEnsureObstacleField()
+    {
+        if (!ensureQueued) return;
+        if (EditorApplication.isCompiling || EditorApplication.isUpdating) return;
         if (EditorApplication.isPlayingOrWillChangePlaymode) return;
-        if (SceneManager.GetActiveScene().name != "ForagingScene") return;
-        if (GameObject.Find(RootName) != null) return;
+
+        if (EnsureObstacleField())
+        {
+            ensureQueued = false;
+            EditorApplication.update -= TryEnsureObstacleField;
+        }
+    }
+
+    private static bool EnsureObstacleField()
+    {
+        if (SceneManager.GetActiveScene().name != "ForagingScene") return true;
+
+        Terrain terrain = Object.FindAnyObjectByType<Terrain>();
+        if (terrain == null) return false;
+
+        GameObject existing = GameObject.Find(RootName);
+        if (HasObstacleChildren(existing)) return true;
+
+        if (existing != null)
+            Object.DestroyImmediate(existing);
 
         CreateObstacleField();
+        return true;
+    }
+
+    private static bool HasObstacleChildren(GameObject root)
+    {
+        if (root == null) return false;
+
+        foreach (Obstacle obstacle in root.GetComponentsInChildren<Obstacle>())
+        {
+            if (obstacle.type == Obstacle.ObstacleType.Rock)
+                return true;
+        }
+
+        return false;
     }
 
     private static void CreateObstacleField()

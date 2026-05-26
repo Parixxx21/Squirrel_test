@@ -3,7 +3,7 @@ using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 
-// Observation space: 12 floats
+// Observation space: 15 floats
 // Actions: Continuous[0]=forward, Continuous[1]=turn  |  Discrete[0]: 0=move 1=rest
 public class SquirrelAgent : Agent
 {
@@ -28,6 +28,10 @@ public class SquirrelAgent : Agent
     public float energyDrainRate   = 0.001f;
     public float energyRestoreRate = 0.005f;
     public float fearDecayRate     = 0.002f;
+
+    [Header("Obstacle Avoidance")]
+    public float obstacleProximityPenaltyDistance = 2f;
+    public float obstacleProximityPenalty = 0.002f;
 
     private Rigidbody rb;
     private bool isResting;
@@ -96,6 +100,9 @@ public class SquirrelAgent : Agent
 
         // Nearest other squirrel (3)
         AddNearestByTag("Squirrel", sensor);
+
+        // Nearest obstacle: local dir + normalized dist (3)
+        AddNearestByTag("Obstacle", sensor);
     }
 
     private void AddNearestByTag(string tag, VectorSensor sensor)
@@ -177,6 +184,13 @@ public class SquirrelAgent : Agent
         if (hunger > 0.8f) AddReward(-0.005f);
         if (energy < 0.2f) AddReward(-0.005f);
 
+        float obstacleDist = DistanceToNearestByTag("Obstacle", visionRadius);
+        if (obstacleDist > 0f && obstacleDist < obstacleProximityPenaltyDistance)
+        {
+            float closeness = 1f - obstacleDist / obstacleProximityPenaltyDistance;
+            AddReward(-obstacleProximityPenalty * closeness);
+        }
+
         if (energy <= 0f || hunger >= 1f)
         {
             AddReward(-1f);
@@ -209,6 +223,19 @@ public class SquirrelAgent : Agent
             isInSafeZone = true;
             if (fear > 0.5f) AddReward(0.1f);
         }
+        else if (other.CompareTag("Obstacle"))
+        {
+            ApplyObstacleEffect(other.GetComponent<Obstacle>());
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!other.CompareTag("Obstacle")) return;
+
+        Obstacle obstacle = other.GetComponent<Obstacle>();
+        if (obstacle != null && obstacle.type == Obstacle.ObstacleType.MudPuddle)
+            energy = Mathf.Max(0f, energy - obstacle.energyPenalty * Time.deltaTime);
     }
 
     private void OnTriggerExit(Collider other)
@@ -222,18 +249,37 @@ public class SquirrelAgent : Agent
         if (collision.gameObject.CompareTag("Obstacle"))
         {
             CollisionCount++;
-            fear = Mathf.Min(1f, fear + 0.2f);
-            AddReward(-0.1f);
+            ApplyObstacleEffect(collision.gameObject.GetComponent<Obstacle>());
         }
+    }
+
+    private void ApplyObstacleEffect(Obstacle obstacle)
+    {
+        if (obstacle == null)
+        {
+            fear = Mathf.Min(1f, fear + 0.2f);
+            energy = Mathf.Max(0f, energy - 0.02f);
+            AddReward(-0.1f);
+            return;
+        }
+
+        fear = Mathf.Min(1f, fear + obstacle.fearIncrease);
+        energy = Mathf.Max(0f, energy - obstacle.energyPenalty);
+        AddReward(-obstacle.collisionPenalty);
     }
 
     private float DistanceToNearestAcorn()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, 200f);
+        return DistanceToNearestByTag("Acorn", 200f);
+    }
+
+    private float DistanceToNearestByTag(string tag, float radius)
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, radius);
         float minDist = -1f;
         foreach (var c in hits)
         {
-            if (!c.CompareTag("Acorn")) continue;
+            if (!c.CompareTag(tag) || c.gameObject == gameObject) continue;
             float d = Vector3.Distance(transform.position, c.transform.position);
             if (minDist < 0f || d < minDist) minDist = d;
         }

@@ -19,8 +19,6 @@ public class SquirrelAgent : Agent
     [Header("Movement")]
     public float moveSpeed = 3f;
     public float turnSpeed = 150f;
-    public bool alignToTerrainSlope = true;
-    public float slopeAlignmentSpeed = 10f;
 
     [Header("Vision")]
     public float visionRadius = 20f;
@@ -81,16 +79,13 @@ public class SquirrelAgent : Agent
     public override void Initialize()
     {
         rb = GetComponent<Rigidbody>();
-        rb.constraints = alignToTerrainSlope
-            ? RigidbodyConstraints.None
-            : RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.None;
         RefreshKnownSafeZones();
     }
 
     private void FixedUpdate()
     {
-        if (alignToTerrainSlope)
-            AlignToSlope();
+        AlignToSlope();
     }
 
     private void AlignToSlope()
@@ -119,10 +114,7 @@ public class SquirrelAgent : Agent
             * Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
 
         rb.angularVelocity = Vector3.zero;
-        rb.MoveRotation(Quaternion.Slerp(
-            rb.rotation,
-            targetRotation,
-            Time.fixedDeltaTime * slopeAlignmentSpeed));
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
     }
 
     public override void OnEpisodeBegin()

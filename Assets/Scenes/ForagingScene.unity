@@ -22357,6 +22357,8 @@ MonoBehaviour:
   safeZoneFearReliefReward: 0.003
   safeZoneEntryReward: 0.1
   terminalFailurePenalty: 1
+  caughtByPredatorPenalty: 1
+  safeZoneFearDecayMultiplier: 5
   obstacleProximityPenaltyDistance: 2
   obstacleProximityPenalty: 0.002
 --- !u!114 &1690925880
@@ -22372,7 +22374,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.ML-Agents::Unity.MLAgents.Policies.BehaviorParameters
   m_BrainParameters:
-    VectorObservationSize: 33
+    VectorObservationSize: 36
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2

@@ -3,7 +3,7 @@ using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 
-// Observation space: 33 floats
+// Observation space: 36 floats
 // Actions: Continuous[0]=forward, Continuous[1]=turn  |  Discrete[0]: 0=move 1=rest
 public class SquirrelAgent : Agent
 {
@@ -55,6 +55,10 @@ public class SquirrelAgent : Agent
     public float safeZoneFearReliefReward = 0.003f;
     public float safeZoneEntryReward = 0.1f;
     public float terminalFailurePenalty = 1.0f;
+
+    [Header("Predator Interface")]
+    public float caughtByPredatorPenalty = 1.0f;
+    public float safeZoneFearDecayMultiplier = 5.0f;
 
     [Header("Obstacle Avoidance")]
     public float obstacleProximityPenaltyDistance = 2f;
@@ -136,6 +140,9 @@ public class SquirrelAgent : Agent
 
         // Nearest obstacle: local dir + normalized dist (3)
         AddNearestByTag("Obstacle", sensor);
+
+        // Nearest predator: local dir + normalized dist (3)
+        AddNearestByTag("Predator", sensor);
     }
 
     private void RefreshKnownSafeZones()
@@ -310,6 +317,12 @@ public class SquirrelAgent : Agent
 
     private void OnTriggerStay(Collider other)
     {
+        if (other.CompareTag("Safezone"))
+        {
+            fear = Mathf.Max(0f, fear - fearDecayRate * safeZoneFearDecayMultiplier * Time.deltaTime);
+            return;
+        }
+
         if (!other.CompareTag("Obstacle")) return;
 
         Obstacle obstacle = other.GetComponent<Obstacle>();
@@ -363,6 +376,18 @@ public class SquirrelAgent : Agent
             if (minDist < 0f || d < minDist) minDist = d;
         }
         return minDist;
+    }
+
+    public void IncreaseFear(float amount)
+    {
+        fear = Mathf.Clamp01(fear + Mathf.Max(0f, amount));
+    }
+
+    public void CaughtByPredator()
+    {
+        AddReward(-caughtByPredatorPenalty);
+        SimulationManager.Instance?.OnAgentEpisodeEnd(this);
+        EndEpisode();
     }
 
     private static Collider NearestOf(Collider[] hits, GameObject self)

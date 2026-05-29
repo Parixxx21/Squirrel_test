@@ -22333,6 +22333,8 @@ MonoBehaviour:
   spawnRadius: 20
   moveSpeed: 3
   turnSpeed: 150
+  alignToTerrainSlope: 1
+  slopeAlignmentSpeed: 10
   visionRadius: 20
   maxSafeZonesObserved: 6
   safeZoneDistanceNormalization: 75

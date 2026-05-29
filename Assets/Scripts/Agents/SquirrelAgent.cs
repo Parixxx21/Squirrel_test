@@ -19,6 +19,8 @@ public class SquirrelAgent : Agent
     [Header("Movement")]
     public float moveSpeed = 3f;
     public float turnSpeed = 150f;
+    public bool alignToTerrainSlope = true;
+    public float slopeAlignmentSpeed = 10f;
 
     [Header("Vision")]
     public float visionRadius = 20f;
@@ -79,8 +81,48 @@ public class SquirrelAgent : Agent
     public override void Initialize()
     {
         rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = alignToTerrainSlope
+            ? RigidbodyConstraints.None
+            : RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         RefreshKnownSafeZones();
+    }
+
+    private void FixedUpdate()
+    {
+        if (alignToTerrainSlope)
+            AlignToSlope();
+    }
+
+    private void AlignToSlope()
+    {
+        if (terrain == null || terrain.terrainData == null) return;
+
+        Vector3 terrainPosition = terrain.transform.position;
+        TerrainData terrainData = terrain.terrainData;
+
+        float normalizedX = Mathf.InverseLerp(
+            terrainPosition.x,
+            terrainPosition.x + terrainData.size.x,
+            transform.position.x);
+        float normalizedZ = Mathf.InverseLerp(
+            terrainPosition.z,
+            terrainPosition.z + terrainData.size.z,
+            transform.position.z);
+
+        if (normalizedX < 0f || normalizedX > 1f || normalizedZ < 0f || normalizedZ > 1f)
+            return;
+
+        Vector3 normal = terrainData.GetInterpolatedNormal(normalizedX, normalizedZ);
+        if (normal.sqrMagnitude < 0.001f) return;
+
+        Quaternion targetRotation = Quaternion.FromToRotation(Vector3.up, normal)
+            * Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+
+        rb.angularVelocity = Vector3.zero;
+        rb.MoveRotation(Quaternion.Slerp(
+            rb.rotation,
+            targetRotation,
+            Time.fixedDeltaTime * slopeAlignmentSpeed));
     }
 
     public override void OnEpisodeBegin()

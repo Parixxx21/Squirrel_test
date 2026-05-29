@@ -22340,6 +22340,23 @@ MonoBehaviour:
   energyDrainRate: 0.002
   energyRestoreRate: 0.005
   fearDecayRate: 0.002
+  highHungerThreshold: 0.8
+  lowEnergyThreshold: 0.25
+  highFearThreshold: 0.5
+  terminalHungerThreshold: 1
+  terminalEnergyThreshold: 0
+  acornHungerReduction: 0.3
+  acornEnergyBonus: 0.1
+  stepPenalty: 0.0005
+  acornReward: 1
+  acornApproachRewardScale: 0.05
+  hungryPenalty: 0.005
+  lowEnergyPenalty: 0.005
+  goodRestReward: 0.0015
+  unnecessaryRestPenalty: 0.001
+  safeZoneFearReliefReward: 0.003
+  safeZoneEntryReward: 0.1
+  terminalFailurePenalty: 1
   obstacleProximityPenaltyDistance: 2
   obstacleProximityPenalty: 0.002
 --- !u!114 &1690925880
@@ -22364,9 +22381,9 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: a290552b267824213b34eaaa9ab888be, type: 3}
+  m_Model: {fileID: 0}
   m_InferenceDevice: 0
-  m_BehaviorType: 2
+  m_BehaviorType: 0
   m_BehaviorName: Squirrel
   TeamId: 0
   m_UseChildSensors: 1

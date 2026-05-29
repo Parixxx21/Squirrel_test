@@ -14,7 +14,7 @@ public class MetricsRecorder : MonoBehaviour
     {
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(csvPath)));
         writer = new StreamWriter(csvPath, false, Encoding.UTF8);
-        writer.WriteLine("Episode,AcornsCollected,TotalDistance,Collisions,FinalHunger,FinalEnergy");
+        writer.WriteLine("Episode,AcornsCollected,TotalDistance,Collisions,FinalHunger,FinalEnergy,FinalFear,CumulativeReward");
     }
 
     public void RecordEpisode(SquirrelAgent a)
@@ -22,7 +22,7 @@ public class MetricsRecorder : MonoBehaviour
         episodeIndex++;
         writer.WriteLine(
             $"{episodeIndex},{a.AcornsCollected},{a.TotalDistance:F2}," +
-            $"{a.CollisionCount},{a.hunger:F3},{a.energy:F3}");
+            $"{a.CollisionCount},{a.hunger:F3},{a.energy:F3},{a.fear:F3},{a.GetCumulativeReward():F3}");
         writer.Flush();
     }
 

@@ -33,6 +33,29 @@ public class SquirrelAgent : Agent
     public float energyRestoreRate = 0.005f;
     public float fearDecayRate     = 0.002f;
 
+    [Header("State Thresholds")]
+    public float highHungerThreshold = 0.8f;
+    public float lowEnergyThreshold = 0.25f;
+    public float highFearThreshold = 0.5f;
+    public float terminalHungerThreshold = 1.0f;
+    public float terminalEnergyThreshold = 0.0f;
+
+    [Header("Acorn Effects")]
+    public float acornHungerReduction = 0.3f;
+    public float acornEnergyBonus = 0.1f;
+
+    [Header("Reward Shaping")]
+    public float stepPenalty = 0.0005f;
+    public float acornReward = 1.0f;
+    public float acornApproachRewardScale = 0.05f;
+    public float hungryPenalty = 0.005f;
+    public float lowEnergyPenalty = 0.005f;
+    public float goodRestReward = 0.0015f;
+    public float unnecessaryRestPenalty = 0.001f;
+    public float safeZoneFearReliefReward = 0.003f;
+    public float safeZoneEntryReward = 0.1f;
+    public float terminalFailurePenalty = 1.0f;
+
     [Header("Obstacle Avoidance")]
     public float obstacleProximityPenaltyDistance = 2f;
     public float obstacleProximityPenalty = 0.002f;
@@ -195,7 +218,8 @@ public class SquirrelAgent : Agent
 
             // Move along terrain slope so the squirrel can climb hills naturally
             Vector3 moveDir = transform.forward * forward;
-            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 2f))
+            bool hasGround = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 2f);
+            if (hasGround)
                 moveDir = Vector3.ProjectOnPlane(moveDir, hit.normal).normalized * Mathf.Abs(forward);
 
             rb.linearVelocity = new Vector3(
@@ -204,7 +228,7 @@ public class SquirrelAgent : Agent
                 moveDir.z * moveSpeed);
 
             // Steeper slope = more energy drain
-            float slopeCost = hit.normal != Vector3.zero
+            float slopeCost = hasGround && hit.normal != Vector3.zero
                 ? 1f + (1f - hit.normal.y) * 2f
                 : 1f;
             energy -= energyDrainRate * slopeCost;
@@ -213,6 +237,11 @@ public class SquirrelAgent : Agent
         {
             rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
             energy += energyRestoreRate;
+
+            if (energy < lowEnergyThreshold)
+                AddReward(goodRestReward);
+            else if (hunger > highHungerThreshold)
+                AddReward(-unnecessaryRestPenalty);
         }
 
         hunger = Mathf.Clamp01(hunger + hungerRate);
@@ -222,17 +251,17 @@ public class SquirrelAgent : Agent
         TotalDistance += Vector3.Distance(transform.position, lastPosition);
         lastPosition   = transform.position;
 
-        // Per-step penalty
-        AddReward(-0.0005f);
+        AddReward(-stepPenalty);
 
         // Reward shaping: getting closer to nearest acorn
         float currDist = DistanceToNearestAcorn();
         if (prevDistToAcorn > 0f && currDist > 0f)
-            AddReward((prevDistToAcorn - currDist) * 0.05f);
+            AddReward((prevDistToAcorn - currDist) * acornApproachRewardScale);
         prevDistToAcorn = currDist;
 
-        if (hunger > 0.8f) AddReward(-0.005f);
-        if (energy < 0.2f) AddReward(-0.005f);
+        if (hunger > highHungerThreshold) AddReward(-hungryPenalty);
+        if (energy < lowEnergyThreshold) AddReward(-lowEnergyPenalty);
+        if (isInSafeZone && fear > highFearThreshold) AddReward(safeZoneFearReliefReward);
 
         float obstacleDist = DistanceToNearestByTag("Obstacle", visionRadius);
         if (obstacleDist > 0f && obstacleDist < obstacleProximityPenaltyDistance)
@@ -241,9 +270,9 @@ public class SquirrelAgent : Agent
             AddReward(-obstacleProximityPenalty * closeness);
         }
 
-        if (energy <= 0f || hunger >= 1f)
+        if (energy <= terminalEnergyThreshold || hunger >= terminalHungerThreshold)
         {
-            AddReward(-1f);
+            AddReward(-terminalFailurePenalty);
             SimulationManager.Instance?.OnAgentEpisodeEnd(this);
             EndEpisode();
         }
@@ -263,15 +292,15 @@ public class SquirrelAgent : Agent
         if (other.CompareTag("Acorn"))
         {
             AcornsCollected++;
-            hunger = Mathf.Max(0f, hunger - 0.3f);
-            energy = Mathf.Min(1f, energy + 0.1f);
-            AddReward(1.0f);
+            hunger = Mathf.Max(0f, hunger - acornHungerReduction);
+            energy = Mathf.Min(1f, energy + acornEnergyBonus);
+            AddReward(acornReward);
             other.GetComponent<Acorn>()?.OnCollected();
         }
         else if (other.CompareTag("Safezone"))
         {
             isInSafeZone = true;
-            if (fear > 0.5f) AddReward(0.1f);
+            if (fear > highFearThreshold) AddReward(safeZoneEntryReward);
         }
         else if (other.CompareTag("Obstacle"))
         {

@@ -3,7 +3,7 @@ using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 
-// Observation space: 12 floats
+// Observation space: 33 floats
 // Actions: Continuous[0]=forward, Continuous[1]=turn  |  Discrete[0]: 0=move 1=rest
 public class SquirrelAgent : Agent
 {
@@ -23,17 +23,26 @@ public class SquirrelAgent : Agent
     [Header("Vision")]
     public float visionRadius = 20f;
 
+    [Header("Map Knowledge")]
+    public int maxSafeZonesObserved = 6;
+    public float safeZoneDistanceNormalization = 75f;
+
     [Header("Rates")]
     public float hungerRate        = 0.0003f;  // slower hunger = longer episodes
     public float energyDrainRate   = 0.001f;
     public float energyRestoreRate = 0.005f;
     public float fearDecayRate     = 0.002f;
 
+    [Header("Obstacle Avoidance")]
+    public float obstacleProximityPenaltyDistance = 2f;
+    public float obstacleProximityPenalty = 0.002f;
+
     private Rigidbody rb;
     private bool isResting;
     private bool isInSafeZone;
     private Vector3 lastPosition;
     private float prevDistToAcorn = -1f;
+    private Transform[] knownSafeZones = new Transform[0];
 
     // Public metrics read by MetricsRecorder
     public int   AcornsCollected { get; private set; }
@@ -44,6 +53,7 @@ public class SquirrelAgent : Agent
     {
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        RefreshKnownSafeZones();
     }
 
     public override void OnEpisodeBegin()
@@ -56,6 +66,7 @@ public class SquirrelAgent : Agent
         CollisionCount  = 0;
         isResting       = false;
         prevDistToAcorn = -1f;
+        RefreshKnownSafeZones();
 
         // Reset position to a random point on the terrain
         Vector3 spawnPos = GetRandomSpawnPosition();
@@ -96,6 +107,52 @@ public class SquirrelAgent : Agent
 
         // Nearest other squirrel (3)
         AddNearestByTag("Squirrel", sensor);
+
+        // Known safe zones: local dir + normalized dist for each slot (18)
+        AddKnownSafeZones(sensor);
+
+        // Nearest obstacle: local dir + normalized dist (3)
+        AddNearestByTag("Obstacle", sensor);
+    }
+
+    private void RefreshKnownSafeZones()
+    {
+        GameObject[] safeZoneObjects = GameObject.FindGameObjectsWithTag("Safezone");
+        System.Array.Sort(safeZoneObjects, (a, b) => string.CompareOrdinal(a.name, b.name));
+
+        int count = Mathf.Min(maxSafeZonesObserved, safeZoneObjects.Length);
+        knownSafeZones = new Transform[count];
+
+        for (int i = 0; i < count; i++)
+            knownSafeZones[i] = safeZoneObjects[i].transform;
+    }
+
+    private void AddKnownSafeZones(VectorSensor sensor)
+    {
+        for (int i = 0; i < maxSafeZonesObserved; i++)
+        {
+            Transform safeZone = i < knownSafeZones.Length ? knownSafeZones[i] : null;
+
+            if (safeZone == null)
+            {
+                sensor.AddObservation(0f);
+                sensor.AddObservation(0f);
+                sensor.AddObservation(1f);
+                continue;
+            }
+
+            Vector3 toSafeZone = safeZone.position - transform.position;
+            Vector3 flatDirection = new Vector3(toSafeZone.x, 0f, toSafeZone.z);
+            float distance = flatDirection.magnitude;
+
+            Vector3 localDir = distance > 0.001f
+                ? transform.InverseTransformDirection(flatDirection.normalized)
+                : Vector3.zero;
+
+            sensor.AddObservation(localDir.x);
+            sensor.AddObservation(localDir.z);
+            sensor.AddObservation(Mathf.Clamp01(distance / safeZoneDistanceNormalization));
+        }
     }
 
     private void AddNearestByTag(string tag, VectorSensor sensor)
@@ -177,6 +234,13 @@ public class SquirrelAgent : Agent
         if (hunger > 0.8f) AddReward(-0.005f);
         if (energy < 0.2f) AddReward(-0.005f);
 
+        float obstacleDist = DistanceToNearestByTag("Obstacle", visionRadius);
+        if (obstacleDist > 0f && obstacleDist < obstacleProximityPenaltyDistance)
+        {
+            float closeness = 1f - obstacleDist / obstacleProximityPenaltyDistance;
+            AddReward(-obstacleProximityPenalty * closeness);
+        }
+
         if (energy <= 0f || hunger >= 1f)
         {
             AddReward(-1f);
@@ -209,6 +273,19 @@ public class SquirrelAgent : Agent
             isInSafeZone = true;
             if (fear > 0.5f) AddReward(0.1f);
         }
+        else if (other.CompareTag("Obstacle"))
+        {
+            ApplyObstacleEffect(other.GetComponent<Obstacle>());
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!other.CompareTag("Obstacle")) return;
+
+        Obstacle obstacle = other.GetComponent<Obstacle>();
+        if (obstacle != null && obstacle.type == Obstacle.ObstacleType.MudPuddle)
+            energy = Mathf.Max(0f, energy - obstacle.energyPenalty * Time.deltaTime);
     }
 
     private void OnTriggerExit(Collider other)
@@ -222,18 +299,37 @@ public class SquirrelAgent : Agent
         if (collision.gameObject.CompareTag("Obstacle"))
         {
             CollisionCount++;
-            fear = Mathf.Min(1f, fear + 0.2f);
-            AddReward(-0.1f);
+            ApplyObstacleEffect(collision.gameObject.GetComponent<Obstacle>());
         }
+    }
+
+    private void ApplyObstacleEffect(Obstacle obstacle)
+    {
+        if (obstacle == null)
+        {
+            fear = Mathf.Min(1f, fear + 0.2f);
+            energy = Mathf.Max(0f, energy - 0.02f);
+            AddReward(-0.1f);
+            return;
+        }
+
+        fear = Mathf.Min(1f, fear + obstacle.fearIncrease);
+        energy = Mathf.Max(0f, energy - obstacle.energyPenalty);
+        AddReward(-obstacle.collisionPenalty);
     }
 
     private float DistanceToNearestAcorn()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, 200f);
+        return DistanceToNearestByTag("Acorn", 200f);
+    }
+
+    private float DistanceToNearestByTag(string tag, float radius)
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, radius);
         float minDist = -1f;
         foreach (var c in hits)
         {
-            if (!c.CompareTag("Acorn")) continue;
+            if (!c.CompareTag(tag) || c.gameObject == gameObject) continue;
             float d = Vector3.Distance(transform.position, c.transform.position);
             if (minDist < 0f || d < minDist) minDist = d;
         }

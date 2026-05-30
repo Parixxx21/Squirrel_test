@@ -16,6 +16,7 @@ public class SimulationManager : MonoBehaviour
         if (Instance == null) Instance = this;
         else { Destroy(gameObject); return; }
 
+        Application.runInBackground = true;
         metrics = GetComponent<MetricsRecorder>();
     }
 

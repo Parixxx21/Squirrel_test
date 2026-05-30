@@ -53,9 +53,18 @@ public class AcornSpawner : MonoBehaviour
         Vector3 center = transform.position;
         float x = center.x + Random.Range(-spawnRadius, spawnRadius);
         float z = center.z + Random.Range(-spawnRadius, spawnRadius);
-        float y = terrain != null
-            ? terrain.SampleHeight(new Vector3(x, 0f, z)) + heightOffset
-            : center.y + heightOffset;
-        return new Vector3(x, y, z);
+
+        if (terrain != null)
+        {
+            float margin = 2f;
+            Vector3 tPos = terrain.transform.position;
+            TerrainData data = terrain.terrainData;
+            x = Mathf.Clamp(x, tPos.x + margin, tPos.x + data.size.x - margin);
+            z = Mathf.Clamp(z, tPos.z + margin, tPos.z + data.size.z - margin);
+            float y = terrain.SampleHeight(new Vector3(x, 0f, z)) + tPos.y + heightOffset;
+            return new Vector3(x, y, z);
+        }
+
+        return new Vector3(x, center.y + heightOffset, z);
     }
 }

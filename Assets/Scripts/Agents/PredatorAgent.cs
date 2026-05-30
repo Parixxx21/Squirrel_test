@@ -20,6 +20,8 @@ public class PredatorAgent : MonoBehaviour
     [Header("Avoidance")]
     public float predatorAvoidRadius = 2.0f;
     public float predatorAvoidStrength = 1.5f;
+    public float obstacleCheckDistance = 4f;
+    public float obstacleAvoidStrength = 2.5f;
 
     [Header("Boundary")]
     public Terrain terrain;
@@ -49,6 +51,7 @@ public class PredatorAgent : MonoBehaviour
         if (target != null)
         {
             ChaseTarget();
+            ApplyFearToTarget();
         }
         else
         {
@@ -127,12 +130,12 @@ public class PredatorAgent : MonoBehaviour
         if (dist <= stopDistanceToTarget)
         {
             rb.linearVelocity = Vector3.zero;
-            ApplyFearToTarget();
             return;
         }
 
         Vector3 direction = toTarget.normalized;
         direction += GetPredatorAvoidanceDirection() * predatorAvoidStrength;
+        direction += GetObstacleAvoidanceDirection() * obstacleAvoidStrength;
         direction.y = 0f;
 
         if (direction.sqrMagnitude < 0.01f) return;
@@ -149,6 +152,7 @@ public class PredatorAgent : MonoBehaviour
 
         Vector3 direction = wanderDirection;
         direction += GetPredatorAvoidanceDirection() * predatorAvoidStrength;
+        direction += GetObstacleAvoidanceDirection() * obstacleAvoidStrength;
         direction.y = 0f;
 
         if (direction.sqrMagnitude < 0.01f)
@@ -163,6 +167,34 @@ public class PredatorAgent : MonoBehaviour
 
         Vector2 random2D = Random.insideUnitCircle.normalized;
         wanderDirection = new Vector3(random2D.x, 0f, random2D.y);
+    }
+
+    private Vector3 GetObstacleAvoidanceDirection()
+    {
+        Vector3 avoidDir = Vector3.zero;
+        Vector3 origin = transform.position + Vector3.up * 0.5f;
+
+        Vector3[] checkDirs = {
+            transform.forward,
+            Quaternion.Euler(0f, -40f, 0f) * transform.forward,
+            Quaternion.Euler(0f,  40f, 0f) * transform.forward,
+        };
+
+        foreach (var dir in checkDirs)
+        {
+            if (Physics.Raycast(origin, dir, out RaycastHit hit, obstacleCheckDistance))
+            {
+                if (!hit.collider.isTrigger &&
+                    !hit.collider.CompareTag("Squirrel") &&
+                    !hit.collider.CompareTag("Predator"))
+                {
+                    float weight = 1f - hit.distance / obstacleCheckDistance;
+                    avoidDir += Vector3.Cross(Vector3.up, hit.normal) * weight;
+                }
+            }
+        }
+
+        return avoidDir;
     }
 
     private Vector3 GetPredatorAvoidanceDirection()

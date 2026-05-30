@@ -15,6 +15,7 @@ public class SquirrelAgent : Agent
     [Header("Spawn")]
     public Terrain terrain;
     public float spawnRadius = 20f;
+    public float boundaryMargin = 3f;
 
     [Header("Movement")]
     public float moveSpeed = 3f;
@@ -86,6 +87,7 @@ public class SquirrelAgent : Agent
 
     private void FixedUpdate()
     {
+        EnforceTerrainBoundary();
         AlignToSlope();
     }
 
@@ -140,14 +142,59 @@ public class SquirrelAgent : Agent
 
     private Vector3 GetRandomSpawnPosition()
     {
-        float margin = 5f;
-        float size   = terrain != null ? terrain.terrainData.size.x : 50f;
-        float x = Random.Range(margin, size - margin);
-        float z = Random.Range(margin, size - margin);
-        float y = terrain != null
-            ? terrain.SampleHeight(new Vector3(x, 0f, z)) + 1f
-            : 3f;
+        if (terrain == null)
+            return new Vector3(25f, 3f, 25f);
+
+        Vector3 terrainPos = terrain.transform.position;
+        TerrainData data = terrain.terrainData;
+        float minX = terrainPos.x + boundaryMargin;
+        float maxX = terrainPos.x + data.size.x - boundaryMargin;
+        float minZ = terrainPos.z + boundaryMargin;
+        float maxZ = terrainPos.z + data.size.z - boundaryMargin;
+
+        float x = Random.Range(minX, maxX);
+        float z = Random.Range(minZ, maxZ);
+        float y = terrain.SampleHeight(new Vector3(x, 0f, z)) + terrainPos.y + 1f;
         return new Vector3(x, y, z);
+    }
+
+    private bool IsInsideTerrain(Vector3 pos)
+    {
+        if (terrain == null) return true;
+
+        Vector3 terrainPos = terrain.transform.position;
+        TerrainData data = terrain.terrainData;
+
+        float minX = terrainPos.x + boundaryMargin;
+        float maxX = terrainPos.x + data.size.x - boundaryMargin;
+        float minZ = terrainPos.z + boundaryMargin;
+        float maxZ = terrainPos.z + data.size.z - boundaryMargin;
+
+        return pos.x >= minX && pos.x <= maxX &&
+               pos.z >= minZ && pos.z <= maxZ;
+    }
+
+    private void EnforceTerrainBoundary()
+    {
+        if (terrain == null) return;
+
+        Vector3 pos = transform.position;
+        if (IsInsideTerrain(pos)) return;
+
+        Vector3 terrainPos = terrain.transform.position;
+        TerrainData data = terrain.terrainData;
+
+        float minX = terrainPos.x + boundaryMargin;
+        float maxX = terrainPos.x + data.size.x - boundaryMargin;
+        float minZ = terrainPos.z + boundaryMargin;
+        float maxZ = terrainPos.z + data.size.z - boundaryMargin;
+
+        pos.x = Mathf.Clamp(pos.x, minX, maxX);
+        pos.z = Mathf.Clamp(pos.z, minZ, maxZ);
+        pos.y = terrain.SampleHeight(pos) + terrainPos.y + 1f;
+
+        transform.position = pos;
+        rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -264,10 +311,19 @@ public class SquirrelAgent : Agent
             if (hasGround)
                 moveDir = Vector3.ProjectOnPlane(moveDir, hit.normal).normalized * Mathf.Abs(forward);
 
-            rb.linearVelocity = new Vector3(
+            Vector3 horizontalVel = new Vector3(
                 moveDir.x * moveSpeed,
-                rb.linearVelocity.y,
+                0f,
                 moveDir.z * moveSpeed);
+
+            Vector3 nextPos = transform.position + horizontalVel * Time.fixedDeltaTime;
+            if (!IsInsideTerrain(nextPos))
+                horizontalVel = Vector3.zero;
+
+            rb.linearVelocity = new Vector3(
+                horizontalVel.x,
+                rb.linearVelocity.y,
+                horizontalVel.z);
 
             // Steeper slope = more energy drain
             float slopeCost = hasGround && hit.normal != Vector3.zero

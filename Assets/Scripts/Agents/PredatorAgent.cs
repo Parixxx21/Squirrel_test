@@ -4,7 +4,7 @@ using UnityEngine;
 public class PredatorAgent : MonoBehaviour
 {
     [Header("Movement")]
-    public float moveSpeed = 3.5f;
+    public float moveSpeed = 2.0f;
     public float wanderSpeedMultiplier = 0.5f;
     public float turnSpeed = 180f;
 

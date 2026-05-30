@@ -8,6 +8,7 @@ TagManager:
   - Obstacle
   - Safezone
   - Squirrel
+  - Predator
   layers:
   - Default
   - TransparentFX

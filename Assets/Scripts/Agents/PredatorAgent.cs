@@ -49,7 +49,6 @@ public class PredatorAgent : MonoBehaviour
         if (target != null)
         {
             ChaseTarget();
-            ApplyFearToTarget();
         }
         else
         {

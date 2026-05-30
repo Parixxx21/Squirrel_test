@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{e2f142e9-a60d-3b72-42af-381e7c21bd76}</ProjectGuid>
+    <ProjectGuid>{2931b242-61d9-17fa-29b5-1cdf1ffffe91}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Unity.RenderPipelines.HighDefinition.Editor.Tests</AssemblyName>
@@ -509,7 +509,7 @@
         <HintPath>/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.ext.nunit@d8c07649098d/net40/unity-custom/nunit.framework.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.ext.nunit@d8c07649098d/net40/unity-custom/nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
         <HintPath>/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
@@ -892,43 +892,43 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.csproj">
-      <Project>{f9e098c8-be4b-ec5b-b38a-f4d50c68db5c}</Project>
+      <Project>{4e487ecf-ce28-a1c3-8906-0aab46aa63c1}</Project>
       <Name>Unity.RenderPipelines.Core.Runtime</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.Core.Editor.csproj">
-      <Project>{eec402bb-26b1-f4db-b155-f99d6afb39e3}</Project>
+      <Project>{7d1870c7-72af-95c0-4545-03f542cc4b69}</Project>
       <Name>Unity.RenderPipelines.Core.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.Core.Editor.Tests.csproj">
-      <Project>{5d582ce6-6d0a-89e8-67b0-0f15e09a2ce7}</Project>
+      <Project>{265c7517-c6ff-7da7-66f4-3d4255e8eb90}</Project>
       <Name>Unity.RenderPipelines.Core.Editor.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.HighDefinition.Runtime.csproj">
-      <Project>{7dc2997c-7c84-f815-f9c9-54e89578e951}</Project>
+      <Project>{04409ee3-f27a-d234-fc84-183b5cf403ee}</Project>
       <Name>Unity.RenderPipelines.HighDefinition.Runtime</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.HighDefinition.Editor.csproj">
-      <Project>{fd79c30f-a406-cf66-3aa7-1405e0a0db75}</Project>
+      <Project>{adedf246-6d7f-6c2b-d301-ecc67ba065d2}</Project>
       <Name>Unity.RenderPipelines.HighDefinition.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.GPUDriven.Runtime.csproj">
-      <Project>{6000eb08-e933-ad30-9d48-0d43c5a4aa51}</Project>
+      <Project>{aa28c026-0808-f7fa-ddae-9f79fe0ed78a}</Project>
       <Name>Unity.RenderPipelines.GPUDriven.Runtime</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.Core.Editor.Shared.csproj">
-      <Project>{08371461-8702-e07f-b59d-ce61f589e7e7}</Project>
+      <Project>{9ed962fa-edfe-940c-5da5-b5c0b12e5c6c}</Project>
       <Name>Unity.RenderPipelines.Core.Editor.Shared</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.Shared.csproj">
-      <Project>{2611f310-0dd6-76da-d8bc-8867edeb85ab}</Project>
+      <Project>{9861bf7e-4d31-725f-665f-ff725e4aa710}</Project>
       <Name>Unity.RenderPipelines.Core.Runtime.Shared</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
-      <Project>{d29564e8-332c-de47-b3b2-a56351951469}</Project>
+      <Project>{284c11c4-cce3-4add-25c3-da145480ec83}</Project>
       <Name>UnityEditor.UI</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEngine.UI.csproj">
-      <Project>{75360e69-3064-2b4c-2a3b-929772723e4e}</Project>
+      <Project>{26c8bea5-d1e6-5e59-d055-4b60747f3aa4}</Project>
       <Name>UnityEngine.UI</Name>
     </ProjectReference>
   </ItemGroup>

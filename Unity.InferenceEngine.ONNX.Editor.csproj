@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{1124b37a-5ab9-096e-1f82-0deb01f6f3be}</ProjectGuid>
+    <ProjectGuid>{d6f90bfa-7f39-fcdf-8a45-29157fcf5c7a}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Unity.InferenceEngine.ONNX.Editor</AssemblyName>
@@ -39,7 +39,7 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/Resources/BuildPipeline/Unity.SourceGenerators/Unity.SourceGenerators.dll" />
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/Resources/BuildPipeline/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll" />
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/Resources/BuildPipeline/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
-    <Analyzer Include="/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.ai.inference@9a123aee5df7/Runtime/Core/SourceGenerator/SourceGenerators.dll" />
+    <Analyzer Include="/Applications/Unity/275_Project/Library/PackageCache/com.unity.ai.inference@9a123aee5df7/Runtime/Core/SourceGenerator/SourceGenerators.dll" />
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Library/PackageCache/com.unity.ai.inference@9a123aee5df7/Editor/ONNX/Metadata/IONNXMetadataImportCallbackReceiver.cs" />
@@ -468,7 +468,7 @@
         <HintPath>/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.ext.nunit@d8c07649098d/net40/unity-custom/nunit.framework.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.ext.nunit@d8c07649098d/net40/unity-custom/nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
         <HintPath>/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
@@ -851,15 +851,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Unity.InferenceEngine.csproj">
-      <Project>{2beee9a5-6e25-4efc-7ce8-c78463bee949}</Project>
+      <Project>{855e0ec2-835e-4e01-ce71-f4d0856910f1}</Project>
       <Name>Unity.InferenceEngine</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
-      <Project>{d29564e8-332c-de47-b3b2-a56351951469}</Project>
+      <Project>{284c11c4-cce3-4add-25c3-da145480ec83}</Project>
       <Name>UnityEditor.UI</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEngine.UI.csproj">
-      <Project>{75360e69-3064-2b4c-2a3b-929772723e4e}</Project>
+      <Project>{26c8bea5-d1e6-5e59-d055-4b60747f3aa4}</Project>
       <Name>UnityEngine.UI</Name>
     </ProjectReference>
   </ItemGroup>

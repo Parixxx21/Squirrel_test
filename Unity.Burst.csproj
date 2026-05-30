@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{6d717da9-013b-cb45-0fc6-13098fa789ce}</ProjectGuid>
+    <ProjectGuid>{362c0be5-6889-d2ae-b57d-f5610298f1cc}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Unity.Burst</AssemblyName>
@@ -514,7 +514,7 @@
         <HintPath>/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Burst.Unsafe">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.burst@6bb9aca3ef38/Unity.Burst.Unsafe.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.burst@6bb9aca3ef38/Unity.Burst.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
         <HintPath>/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
@@ -888,11 +888,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="UnityEditor.UI.csproj">
-      <Project>{d29564e8-332c-de47-b3b2-a56351951469}</Project>
+      <Project>{284c11c4-cce3-4add-25c3-da145480ec83}</Project>
       <Name>UnityEditor.UI</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEngine.UI.csproj">
-      <Project>{75360e69-3064-2b4c-2a3b-929772723e4e}</Project>
+      <Project>{26c8bea5-d1e6-5e59-d055-4b60747f3aa4}</Project>
       <Name>UnityEngine.UI</Name>
     </ProjectReference>
   </ItemGroup>

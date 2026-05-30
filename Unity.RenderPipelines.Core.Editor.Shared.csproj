@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{08371461-8702-e07f-b59d-ce61f589e7e7}</ProjectGuid>
+    <ProjectGuid>{9ed962fa-edfe-940c-5da5-b5c0b12e5c6c}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Unity.RenderPipelines.Core.Editor.Shared</AssemblyName>
@@ -485,67 +485,67 @@
         <HintPath>/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="TextMateSharpPlastic">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/TextMateSharp/TextMateSharpPlastic.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/TextMateSharp/TextMateSharpPlastic.dll</HintPath>
     </Reference>
     <Reference Include="TextMateSharpPlastic.Grammars">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/TextMateSharp/TextMateSharpPlastic.Grammars.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/TextMateSharp/TextMateSharpPlastic.Grammars.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Abstractions">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.ml-agents@f1016d3568fd/Plugins/System.IO.Abstractions.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.ml-agents@f1016d3568fd/Plugins/System.IO.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.YamlDotNet">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.visualscripting@8bed5ad90189/Editor/VisualScripting.Core/Dependencies/YamlDotNet/Unity.VisualScripting.YamlDotNet.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.visualscripting@8bed5ad90189/Editor/VisualScripting.Core/Dependencies/YamlDotNet/Unity.VisualScripting.YamlDotNet.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Collections.LowLevel.ILSupport">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.collections@65f499a3cc26/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.collections@65f499a3cc26/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.ext.nunit@d8c07649098d/net40/unity-custom/nunit.framework.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.ext.nunit@d8c07649098d/net40/unity-custom/nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Plastic.Antlr3.Runtime">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/Unity.Plastic.Antlr3.Runtime.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/Unity.Plastic.Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="OnigwrapPlastic">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/TextMateSharp/Onigwrap/OnigwrapPlastic.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/TextMateSharp/Onigwrap/OnigwrapPlastic.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Plastic.Newtonsoft.Json">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/Unity.Plastic.Newtonsoft.Json.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/Unity.Plastic.Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="log4netPlastic">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/log4netPlastic.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/log4netPlastic.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.IonicZip">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.visualscripting@8bed5ad90189/Editor/VisualScripting.Core/Dependencies/DotNetZip/Unity.VisualScripting.IonicZip.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.visualscripting@8bed5ad90189/Editor/VisualScripting.Core/Dependencies/DotNetZip/Unity.VisualScripting.IonicZip.dll</HintPath>
     </Reference>
     <Reference Include="Google.Protobuf_Packed">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.ml-agents@f1016d3568fd/Plugins/Google.Protobuf_Packed.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.ml-agents@f1016d3568fd/Plugins/Google.Protobuf_Packed.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Hashing">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.collections@65f499a3cc26/Unity.Collections.Tests/System.IO.Hashing/System.IO.Hashing.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.collections@65f499a3cc26/Unity.Collections.Tests/System.IO.Hashing/System.IO.Hashing.dll</HintPath>
     </Reference>
     <Reference Include="unityplastic">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/unityplastic.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e/Lib/Editor/unityplastic.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.visualscripting@8bed5ad90189/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.visualscripting@8bed5ad90189/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Grpc.Core">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.ml-agents@f1016d3568fd/Plugins/ProtoBuffer/Grpc.Core.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.ml-agents@f1016d3568fd/Plugins/ProtoBuffer/Grpc.Core.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.nuget.newtonsoft-json@4dfd81071c64/Runtime/Newtonsoft.Json.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.nuget.newtonsoft-json@4dfd81071c64/Runtime/Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.TextureAssets">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.visualscripting@8bed5ad90189/Editor/VisualScripting.Core/EditorAssetResources/Unity.VisualScripting.TextureAssets.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.visualscripting@8bed5ad90189/Editor/VisualScripting.Core/EditorAssetResources/Unity.VisualScripting.TextureAssets.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.nuget.mono-cecil@ecb9724e46ff/Mono.Cecil.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.nuget.mono-cecil@ecb9724e46ff/Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Abstractions.TestingHelpers">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.ml-agents@f1016d3568fd/Plugins/System.IO.Abstractions.TestingHelpers.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.ml-agents@f1016d3568fd/Plugins/System.IO.Abstractions.TestingHelpers.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.collections@65f499a3cc26/Unity.Collections.Tests/System.Runtime.CompilerServices.Unsafe/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.collections@65f499a3cc26/Unity.Collections.Tests/System.Runtime.CompilerServices.Unsafe/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
         <HintPath>/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
@@ -928,15 +928,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Unity.RenderPipelines.Core.Editor.csproj">
-      <Project>{eec402bb-26b1-f4db-b155-f99d6afb39e3}</Project>
+      <Project>{7d1870c7-72af-95c0-4545-03f542cc4b69}</Project>
       <Name>Unity.RenderPipelines.Core.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
-      <Project>{d29564e8-332c-de47-b3b2-a56351951469}</Project>
+      <Project>{284c11c4-cce3-4add-25c3-da145480ec83}</Project>
       <Name>UnityEditor.UI</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEngine.UI.csproj">
-      <Project>{75360e69-3064-2b4c-2a3b-929772723e4e}</Project>
+      <Project>{26c8bea5-d1e6-5e59-d055-4b60747f3aa4}</Project>
       <Name>UnityEngine.UI</Name>
     </ProjectReference>
   </ItemGroup>

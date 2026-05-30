@@ -47,6 +47,7 @@ public class SquirrelAgent : Agent
     [Header("Reward Shaping")]
     public float stepPenalty = 0.0005f;
     public float acornReward = 1.0f;
+    public float acornFearMultiplier = 0.3f;  // acorn reward multiplier when fear > highFearThreshold
     public float acornApproachRewardScale = 0.05f;
     public float hungryPenalty = 0.005f;
     public float lowEnergyPenalty = 0.005f;
@@ -335,7 +336,7 @@ public class SquirrelAgent : Agent
             AcornsCollected++;
             hunger = Mathf.Max(0f, hunger - acornHungerReduction);
             energy = Mathf.Min(1f, energy + acornEnergyBonus);
-            AddReward(acornReward);
+            AddReward(fear > highFearThreshold ? acornReward * acornFearMultiplier : acornReward);
             other.GetComponent<Acorn>()?.OnCollected();
         }
         else if (other.CompareTag("Safezone"))

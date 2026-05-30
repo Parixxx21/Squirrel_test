@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{3ee5775c-c59c-d8c6-f9df-8a99ce241880}</ProjectGuid>
+    <ProjectGuid>{6762b6bf-8430-5f46-abb5-80e677a58566}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Unity.AppUI.Editor.Tests</AssemblyName>
@@ -39,8 +39,8 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/Resources/BuildPipeline/Unity.SourceGenerators/Unity.SourceGenerators.dll" />
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/Resources/BuildPipeline/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll" />
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/Resources/BuildPipeline/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
-    <Analyzer Include="/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.dt.app-ui@8ac7e730dd5d/Runtime/SourceGenerators/netstandard2.0/EnumToLowerCase.dll" />
-    <Analyzer Include="/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.dt.app-ui@8ac7e730dd5d/Runtime/MVVM/SourceGenerators/netstandard2.0/MVVMSourceGenerators.dll" />
+    <Analyzer Include="/Applications/Unity/275_Project/Library/PackageCache/com.unity.dt.app-ui@8ac7e730dd5d/Runtime/SourceGenerators/netstandard2.0/EnumToLowerCase.dll" />
+    <Analyzer Include="/Applications/Unity/275_Project/Library/PackageCache/com.unity.dt.app-ui@8ac7e730dd5d/Runtime/MVVM/SourceGenerators/netstandard2.0/MVVMSourceGenerators.dll" />
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Library/PackageCache/com.unity.dt.app-ui@8ac7e730dd5d/Tests/Editor/PropertyDrawerTests.cs" />
@@ -471,7 +471,7 @@
         <HintPath>/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-        <HintPath>/Users/lylaliu/Desktop/Squirrel_test/Library/PackageCache/com.unity.ext.nunit@d8c07649098d/net40/unity-custom/nunit.framework.dll</HintPath>
+        <HintPath>/Applications/Unity/275_Project/Library/PackageCache/com.unity.ext.nunit@d8c07649098d/net40/unity-custom/nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
         <HintPath>/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
@@ -854,39 +854,39 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Unity.AppUI.csproj">
-      <Project>{4d30427c-bdff-6f83-158a-247ff00cef36}</Project>
+      <Project>{aa4f4a90-61a9-cda1-c366-d7ff1ae8e0f8}</Project>
       <Name>Unity.AppUI</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.AppUI.Editor.csproj">
-      <Project>{7cfe6844-2476-83d5-abcb-7b90e734a4fa}</Project>
+      <Project>{46a255d5-ad65-b682-8da4-340c5062d75b}</Project>
       <Name>Unity.AppUI.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.AppUI.Navigation.csproj">
-      <Project>{ec66111b-cc70-47c5-ed1f-1d1f7046660c}</Project>
+      <Project>{28c962b8-8ccc-40f2-edfe-0b5d203af38a}</Project>
       <Name>Unity.AppUI.Navigation</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.AppUI.MVVM.csproj">
-      <Project>{8b4915b6-ff60-a9e9-5001-efc675f096d3}</Project>
+      <Project>{5c540a01-c944-18fb-fcbc-c2664813d78d}</Project>
       <Name>Unity.AppUI.MVVM</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.AppUI.Redux.csproj">
-      <Project>{61b37a96-6f28-d1cb-3b1f-84bca3a80cad}</Project>
+      <Project>{0ad42e31-10d3-a2af-3c62-3c5cd07b1e22}</Project>
       <Name>Unity.AppUI.Redux</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.AppUI.Undo.csproj">
-      <Project>{7ea6e02c-7f03-d34d-b460-4071159adcaf}</Project>
+      <Project>{542519eb-f8e3-f26e-ed35-86f0f14d0f32}</Project>
       <Name>Unity.AppUI.Undo</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.AppUI.InternalAPIBridge.csproj">
-      <Project>{26a30459-1fc9-3943-eb48-f604336760b4}</Project>
+      <Project>{f77fdf6c-ea36-bc52-c423-23037e81e7f0}</Project>
       <Name>Unity.AppUI.InternalAPIBridge</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
-      <Project>{d29564e8-332c-de47-b3b2-a56351951469}</Project>
+      <Project>{284c11c4-cce3-4add-25c3-da145480ec83}</Project>
       <Name>UnityEditor.UI</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEngine.UI.csproj">
-      <Project>{75360e69-3064-2b4c-2a3b-929772723e4e}</Project>
+      <Project>{26c8bea5-d1e6-5e59-d055-4b60747f3aa4}</Project>
       <Name>UnityEngine.UI</Name>
     </ProjectReference>
   </ItemGroup>

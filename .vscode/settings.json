@@ -67,6 +67,6 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "Squirrel_test.slnx",
+    "dotnet.defaultSolution": "275_Project.slnx",
     "dotnet.enableWorkspaceBasedDevelopment": false
 }

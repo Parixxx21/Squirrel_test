@@ -28,11 +28,20 @@ public class PredatorAgent : MonoBehaviour
     public float boundaryMargin = 3f;
     public float heightOffset = 0.3f;
 
+    [Header("Stuck Detection")]
+    public float stuckCheckInterval = 8f;
+    public float stuckDistanceThreshold = 1f;
+
     private Rigidbody rb;
     private SquirrelAgent target;
 
     private Vector3 wanderDirection;
     private float wanderTimer;
+
+    private Vector3 spawnPosition;
+    private Vector3 lastCheckedPosition;
+    private float stuckTimer;
+    private int stuckCount;
 
     void Start()
     {
@@ -42,6 +51,39 @@ public class PredatorAgent : MonoBehaviour
 
         if (terrain == null)
             terrain = Terrain.activeTerrain;
+
+        spawnPosition = transform.position;
+        lastCheckedPosition = transform.position;
+    }
+
+    private void CheckIfStuck()
+    {
+        stuckTimer += Time.fixedDeltaTime;
+        if (stuckTimer < stuckCheckInterval) return;
+
+        stuckTimer = 0f;
+        float moved = Vector3.Distance(transform.position, lastCheckedPosition);
+        lastCheckedPosition = transform.position;
+
+        if (moved < stuckDistanceThreshold)
+        {
+            stuckCount++;
+            if (stuckCount >= 2)
+            {
+                stuckCount = 0;
+                Vector3 respawn = spawnPosition;
+                respawn.y = terrain != null
+                    ? terrain.SampleHeight(spawnPosition) + terrain.transform.position.y + heightOffset
+                    : spawnPosition.y;
+                transform.position = respawn;
+                rb.linearVelocity = Vector3.zero;
+                wanderDirection = Vector3.zero;
+            }
+        }
+        else
+        {
+            stuckCount = 0;
+        }
     }
 
     void FixedUpdate()
@@ -59,6 +101,7 @@ public class PredatorAgent : MonoBehaviour
         }
 
         AlignToSlope();
+        CheckIfStuck();
     }
 
     private void AlignToSlope()

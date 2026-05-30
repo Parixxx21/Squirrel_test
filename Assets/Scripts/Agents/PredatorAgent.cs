@@ -136,6 +136,7 @@ public class PredatorAgent : MonoBehaviour
         Vector3 direction = toTarget.normalized;
         direction += GetPredatorAvoidanceDirection() * predatorAvoidStrength;
         direction += GetObstacleAvoidanceDirection() * obstacleAvoidStrength;
+        direction += GetBoundaryAvoidanceDirection();
         direction.y = 0f;
 
         if (direction.sqrMagnitude < 0.01f) return;
@@ -153,6 +154,7 @@ public class PredatorAgent : MonoBehaviour
         Vector3 direction = wanderDirection;
         direction += GetPredatorAvoidanceDirection() * predatorAvoidStrength;
         direction += GetObstacleAvoidanceDirection() * obstacleAvoidStrength;
+        direction += GetBoundaryAvoidanceDirection();
         direction.y = 0f;
 
         if (direction.sqrMagnitude < 0.01f)
@@ -167,6 +169,30 @@ public class PredatorAgent : MonoBehaviour
 
         Vector2 random2D = Random.insideUnitCircle.normalized;
         wanderDirection = new Vector3(random2D.x, 0f, random2D.y);
+    }
+
+    private Vector3 GetBoundaryAvoidanceDirection()
+    {
+        if (terrain == null) return Vector3.zero;
+
+        Vector3 terrainPos = terrain.transform.position;
+        TerrainData data = terrain.terrainData;
+        Vector3 pos = transform.position;
+
+        float distMinX = pos.x - (terrainPos.x + boundaryMargin);
+        float distMaxX = (terrainPos.x + data.size.x - boundaryMargin) - pos.x;
+        float distMinZ = pos.z - (terrainPos.z + boundaryMargin);
+        float distMaxZ = (terrainPos.z + data.size.z - boundaryMargin) - pos.z;
+
+        float threshold = 8f;
+        Vector3 push = Vector3.zero;
+
+        if (distMinX < threshold) push.x += (threshold - distMinX) / threshold;
+        if (distMaxX < threshold) push.x -= (threshold - distMaxX) / threshold;
+        if (distMinZ < threshold) push.z += (threshold - distMinZ) / threshold;
+        if (distMaxZ < threshold) push.z -= (threshold - distMaxZ) / threshold;
+
+        return push;
     }
 
     private Vector3 GetObstacleAvoidanceDirection()

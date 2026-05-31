@@ -15,7 +15,7 @@ public class PredatorAgent : MonoBehaviour
     public float fearRadius = 6f;
     public float fearIncreaseRate = 0.3f;
     public float catchRadius = 2.5f;
-    public float stopDistanceToTarget = 2.8f;
+    public float stopDistanceToTarget = 1.5f;
 
     [Header("Avoidance")]
     public float predatorAvoidRadius = 2.0f;
@@ -357,9 +357,11 @@ public class PredatorAgent : MonoBehaviour
     {
         if (target == null) return;
 
-        float dist = Vector3.Distance(transform.position, target.transform.position);
+        Vector3 diff = target.transform.position - transform.position;
+        float dist = new Vector3(diff.x, 0f, diff.z).magnitude;
+        float yDiff = Mathf.Abs(diff.y);
 
-        if (dist <= catchRadius)
+        if (dist <= catchRadius && yDiff <= 3f)
         {
             target.IncreaseFear(1f);
             target.CaughtByPredator();

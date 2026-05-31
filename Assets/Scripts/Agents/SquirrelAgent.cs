@@ -55,6 +55,7 @@ public class SquirrelAgent : Agent
     public float goodRestReward = 0.0015f;
     public float unnecessaryRestPenalty = 0.001f;
     public float safeZoneFearReliefReward = 0.003f;
+    public float safeZoneApproachRewardScale = 0.05f;
     public float safeZoneEntryReward = 0.1f;
     public float terminalFailurePenalty = 1.0f;
 
@@ -71,6 +72,7 @@ public class SquirrelAgent : Agent
     private bool isInSafeZone;
     private Vector3 lastPosition;
     private float prevDistToAcorn = -1f;
+    private float prevDistToSafeZone = -1f;
     private Transform[] knownSafeZones = new Transform[0];
 
     // Public metrics read by MetricsRecorder
@@ -128,8 +130,9 @@ public class SquirrelAgent : Agent
         AcornsCollected = 0;
         TotalDistance   = 0f;
         CollisionCount  = 0;
-        isResting       = false;
-        prevDistToAcorn = -1f;
+        isResting           = false;
+        prevDistToAcorn     = -1f;
+        prevDistToSafeZone  = -1f;
         RefreshKnownSafeZones();
 
         // Reset position to a random point on the terrain
@@ -360,6 +363,19 @@ public class SquirrelAgent : Agent
         if (hunger > highHungerThreshold) AddReward(-hungryPenalty);
         if (energy < lowEnergyThreshold) AddReward(-lowEnergyPenalty);
         if (isInSafeZone && fear > highFearThreshold) AddReward(safeZoneFearReliefReward);
+
+        // Approach shaping: reward getting closer to safezone when scared
+        if (fear > highFearThreshold && !isInSafeZone)
+        {
+            float currSafeDist = DistanceToNearestByTag("Safezone", 200f);
+            if (prevDistToSafeZone > 0f && currSafeDist > 0f)
+                AddReward((prevDistToSafeZone - currSafeDist) * safeZoneApproachRewardScale);
+            prevDistToSafeZone = currSafeDist;
+        }
+        else
+        {
+            prevDistToSafeZone = -1f;
+        }
 
         float obstacleDist = DistanceToNearestByTag("Obstacle", visionRadius);
         if (obstacleDist > 0f && obstacleDist < obstacleProximityPenaltyDistance)

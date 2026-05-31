@@ -12,8 +12,8 @@ public class PredatorAgent : MonoBehaviour
     public float detectionRadius = 50f;
 
     [Header("Fear")]
-    public float fearRadius = 6f;
-    public float fearIncreaseRate = 0.3f;
+    public float fearRadius = 15f;
+    public float fearIncreaseRate = 0.15f;
     public float catchRadius = 2.5f;
     public float stopDistanceToTarget = 1.5f;
 

@@ -50,6 +50,9 @@ public class SquirrelAgent : Agent
     public float acornReward = 1.0f;
     public float acornFearMultiplier = 0.3f;  // acorn reward multiplier when fear > highFearThreshold
     public float acornApproachRewardScale = 0.05f;
+    public float acornChaseStepPenalty = 0.0008f;
+    public float fastAcornBonus = 0.25f;
+    public int fastAcornStepWindow = 200;
     public float hungryPenalty = 0.005f;
     public float lowEnergyPenalty = 0.005f;
     public float goodRestReward = 0.0015f;
@@ -73,6 +76,7 @@ public class SquirrelAgent : Agent
     private Vector3 lastPosition;
     private float prevDistToAcorn = -1f;
     private float prevDistToSafeZone = -1f;
+    private int stepsSinceAcorn;
     private Transform[] knownSafeZones = new Transform[0];
 
     // Public metrics read by MetricsRecorder
@@ -133,6 +137,7 @@ public class SquirrelAgent : Agent
         isResting           = false;
         prevDistToAcorn     = -1f;
         prevDistToSafeZone  = -1f;
+        stepsSinceAcorn     = 0;
         RefreshKnownSafeZones();
 
         // Reset position to a random point on the terrain
@@ -303,6 +308,7 @@ public class SquirrelAgent : Agent
         float forward = actions.ContinuousActions[0];
         float turn    = actions.ContinuousActions[1];
         isResting     = actions.DiscreteActions[0] == 1;
+        stepsSinceAcorn++;
 
         if (!isResting)
         {
@@ -358,6 +364,8 @@ public class SquirrelAgent : Agent
         float currDist = DistanceToNearestAcorn();
         if (prevDistToAcorn > 0f && currDist > 0f)
             AddReward((prevDistToAcorn - currDist) * acornApproachRewardScale);
+        if (currDist > 0f)
+            AddReward(-acornChaseStepPenalty);
         prevDistToAcorn = currDist;
 
         if (hunger > highHungerThreshold) AddReward(-hungryPenalty);
@@ -409,6 +417,10 @@ public class SquirrelAgent : Agent
             hunger = Mathf.Max(0f, hunger - acornHungerReduction);
             energy = Mathf.Min(1f, energy + acornEnergyBonus);
             AddReward(fear > highFearThreshold ? acornReward * acornFearMultiplier : acornReward);
+            float speedBonusWindow = Mathf.Max(1f, fastAcornStepWindow);
+            float speedBonus = Mathf.Clamp01(1f - stepsSinceAcorn / speedBonusWindow);
+            AddReward(fastAcornBonus * speedBonus);
+            stepsSinceAcorn = 0;
             other.GetComponent<Acorn>()?.OnCollected();
         }
         else if (other.CompareTag("Safezone"))

@@ -1,0 +1,110 @@
+{
+    "Squirrel": {
+        "checkpoints": [
+            {
+                "steps": 2599786,
+                "file_path": "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2599786.onnx",
+                "reward": null,
+                "creation_time": 1780437504.9678998,
+                "auxillary_file_paths": [
+                    "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2599786.pt"
+                ]
+            },
+            {
+                "steps": 2649954,
+                "file_path": "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2649954.onnx",
+                "reward": 2.5144067307313285,
+                "creation_time": 1780437689.111593,
+                "auxillary_file_paths": [
+                    "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2649954.pt"
+                ]
+            },
+            {
+                "steps": 2699885,
+                "file_path": "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2699885.onnx",
+                "reward": 1.9802889426549275,
+                "creation_time": 1780437865.672897,
+                "auxillary_file_paths": [
+                    "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2699885.pt"
+                ]
+            },
+            {
+                "steps": 2749763,
+                "file_path": "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2749763.onnx",
+                "reward": 5.0180419981479645,
+                "creation_time": 1780438042.7381709,
+                "auxillary_file_paths": [
+                    "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2749763.pt"
+                ]
+            },
+            {
+                "steps": 2799939,
+                "file_path": "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2799939.onnx",
+                "reward": 2.555138699710369,
+                "creation_time": 1780438227.3505762,
+                "auxillary_file_paths": [
+                    "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2799939.pt"
+                ]
+            },
+            {
+                "steps": 2849946,
+                "file_path": "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2849946.onnx",
+                "reward": 5.428373689452807,
+                "creation_time": 1780438402.87201,
+                "auxillary_file_paths": [
+                    "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2849946.pt"
+                ]
+            },
+            {
+                "steps": 2899833,
+                "file_path": "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2899833.onnx",
+                "reward": 1.2841871040208,
+                "creation_time": 1780438579.085981,
+                "auxillary_file_paths": [
+                    "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2899833.pt"
+                ]
+            },
+            {
+                "steps": 2949747,
+                "file_path": "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2949747.onnx",
+                "reward": 3.8148664917264665,
+                "creation_time": 1780438754.5627909,
+                "auxillary_file_paths": [
+                    "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2949747.pt"
+                ]
+            },
+            {
+                "steps": 2999884,
+                "file_path": "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2999884.onnx",
+                "reward": 2.9267151885562472,
+                "creation_time": 1780438931.080163,
+                "auxillary_file_paths": [
+                    "results/lyla-acorn-chase-v1/Squirrel/Squirrel-2999884.pt"
+                ]
+            },
+            {
+                "steps": 3000140,
+                "file_path": "results/lyla-acorn-chase-v1/Squirrel/Squirrel-3000140.onnx",
+                "reward": 2.9267151885562472,
+                "creation_time": 1780438931.11629,
+                "auxillary_file_paths": [
+                    "results/lyla-acorn-chase-v1/Squirrel/Squirrel-3000140.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 3000140,
+            "file_path": "results/lyla-acorn-chase-v1/Squirrel.onnx",
+            "reward": 2.9267151885562472,
+            "creation_time": 1780438931.11629,
+            "auxillary_file_paths": [
+                "results/lyla-acorn-chase-v1/Squirrel/Squirrel-3000140.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.2.0.dev0",
+        "torch_version": "2.8.0"
+    }
+}

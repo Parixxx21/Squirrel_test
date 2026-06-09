@@ -57,6 +57,7 @@ public class SquirrelAgent : Agent
     public float safeZoneFearReliefReward = 0.003f;
     public float safeZoneApproachRewardScale = 0.05f;
     public float safeZoneEntryReward = 0.1f;
+    public float fearPenalty = 0.002f;
     public float terminalFailurePenalty = 1.0f;
 
     [Header("Predator Interface")]
@@ -300,7 +301,7 @@ public class SquirrelAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        float forward = actions.ContinuousActions[0];
+        float forward = Mathf.Max(0f, actions.ContinuousActions[0]);  // no backward movement
         float turn    = actions.ContinuousActions[1];
         isResting     = actions.DiscreteActions[0] == 1;
 
@@ -347,21 +348,27 @@ public class SquirrelAgent : Agent
 
         hunger = Mathf.Clamp01(hunger + hungerRate);
         energy = Mathf.Clamp01(energy);
-        fear   = Mathf.Clamp01(fear - fearDecayRate);
+        fear   = Mathf.Clamp01(fear - fearDecayRate * (isInSafeZone ? safeZoneFearDecayMultiplier : 1f));
 
         TotalDistance += Vector3.Distance(transform.position, lastPosition);
         lastPosition   = transform.position;
 
         AddReward(-stepPenalty);
 
-        // Reward shaping: getting closer to nearest acorn
+        // Reward shaping: getting closer to nearest acorn (suppressed when scared)
         float currDist = DistanceToNearestAcorn();
         if (prevDistToAcorn > 0f && currDist > 0f)
-            AddReward((prevDistToAcorn - currDist) * acornApproachRewardScale);
+        {
+            float approachScale = fear > highFearThreshold
+                ? acornApproachRewardScale * acornFearMultiplier
+                : acornApproachRewardScale;
+            AddReward((prevDistToAcorn - currDist) * approachScale);
+        }
         prevDistToAcorn = currDist;
 
         if (hunger > highHungerThreshold) AddReward(-hungryPenalty);
         if (energy < lowEnergyThreshold) AddReward(-lowEnergyPenalty);
+        if (fear > highFearThreshold) AddReward(-fearPenalty * fear);
         if (isInSafeZone && fear > highFearThreshold) AddReward(safeZoneFearReliefReward);
 
         // Approach shaping: reward getting closer to safezone when scared
@@ -426,7 +433,6 @@ public class SquirrelAgent : Agent
     {
         if (other.CompareTag("Safezone"))
         {
-            fear = Mathf.Max(0f, fear - fearDecayRate * safeZoneFearDecayMultiplier * Time.deltaTime);
             return;
         }
 

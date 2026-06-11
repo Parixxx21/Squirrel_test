@@ -12,8 +12,8 @@ public class PredatorAgent : MonoBehaviour
     public float detectionRadius = 50f;
 
     [Header("Fear")]
-    public float fearRadius = 15f;
-    public float fearIncreaseRate = 0.15f;
+    public float fearRadius = 22f;
+    public float fearIncreaseRate = 0.6f;
     public float catchRadius = 2.5f;
     public float stopDistanceToTarget = 1.5f;
 
@@ -161,7 +161,7 @@ public class PredatorAgent : MonoBehaviour
     {
         if (IsTargetInSafeZone())
         {
-            rb.linearVelocity = Vector3.zero;
+            Wander();
             return;
         }
 
@@ -356,6 +356,7 @@ public class PredatorAgent : MonoBehaviour
     private void ApplyFearToTarget()
     {
         if (target == null) return;
+        if (IsTargetInSafeZone()) return;  // safezone内fear不增加
 
         Vector3 diff = target.transform.position - transform.position;
         float dist = new Vector3(diff.x, 0f, diff.z).magnitude;

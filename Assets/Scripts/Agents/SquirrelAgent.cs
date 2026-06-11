@@ -29,7 +29,7 @@ public class SquirrelAgent : Agent
     public float safeZoneDistanceNormalization = 75f;
 
     [Header("Rates")]
-    public float hungerRate        = 0.0003f;  // slower hunger = longer episodes
+    public float hungerRate        = 0.0008f;
     public float energyDrainRate   = 0.001f;
     public float energyRestoreRate = 0.005f;
     public float fearDecayRate     = 0.002f;
@@ -45,41 +45,34 @@ public class SquirrelAgent : Agent
     public float acornHungerReduction = 0.3f;
     public float acornEnergyBonus = 0.1f;
 
-    [Header("Reward Shaping")]
-    public float stepPenalty = 0.0005f;
-    public float acornReward = 1.0f;
-    public float acornFearMultiplier = 0.3f;  // acorn reward multiplier when fear > highFearThreshold
-    public float acornApproachRewardScale = 0.05f;
-    public float hungryPenalty = 0.005f;
-    public float lowEnergyPenalty = 0.005f;
-    public float goodRestReward = 0.0015f;
-    public float unnecessaryRestPenalty = 0.001f;
-    public float safeZoneFearReliefReward = 0.003f;
-    public float safeZoneApproachRewardScale = 0.05f;
-    public float safeZoneEntryReward = 0.1f;
-    public float fearPenalty = 0.002f;
+    [Header("Homeostasis Reward")]
+    public float hungerWeight = 0.9f;
+    public float energyWeight = 0.1f;
+    public float fearWeight = 1.5f;
+    public float wellbeingScale = 3.0f;
+    public float stepPenalty = 0.0003f;
+    public float survivalBonus = 0.001f;
     public float terminalFailurePenalty = 1.0f;
 
     [Header("Predator Interface")]
     public float caughtByPredatorPenalty = 1.0f;
     public float safeZoneFearDecayMultiplier = 5.0f;
-
-    [Header("Obstacle Avoidance")]
-    public float obstacleProximityPenaltyDistance = 2f;
-    public float obstacleProximityPenalty = 0.002f;
+    public float safeZoneProximityRadius = 8f;
+    public float safeZoneProximityDecayMultiplier = 2.0f;
 
     private Rigidbody rb;
     private bool isResting;
     private bool isInSafeZone;
     private Vector3 lastPosition;
-    private float prevDistToAcorn = -1f;
-    private float prevDistToSafeZone = -1f;
     private Transform[] knownSafeZones = new Transform[0];
 
     // Public metrics read by MetricsRecorder
-    public int   AcornsCollected { get; private set; }
-    public float TotalDistance   { get; private set; }
-    public int   CollisionCount  { get; private set; }
+    public int   AcornsCollected  { get; private set; }
+    public float TotalDistance    { get; private set; }
+    public int   CollisionCount   { get; private set; }
+    public int   SafeZoneEntries  { get; private set; }
+    public bool  CaughtByPredatorFlag { get; private set; }
+    public float SurvivalTime     { get; private set; }
 
     public override void Initialize()
     {
@@ -128,12 +121,13 @@ public class SquirrelAgent : Agent
         hunger = 0f;
         energy = 1f;
         fear   = 0f;
-        AcornsCollected = 0;
-        TotalDistance   = 0f;
-        CollisionCount  = 0;
-        isResting           = false;
-        prevDistToAcorn     = -1f;
-        prevDistToSafeZone  = -1f;
+        AcornsCollected      = 0;
+        TotalDistance        = 0f;
+        CollisionCount       = 0;
+        SafeZoneEntries      = 0;
+        CaughtByPredatorFlag = false;
+        SurvivalTime         = 0f;
+        isResting    = false;
         RefreshKnownSafeZones();
 
         // Reset position to a random point on the terrain
@@ -339,57 +333,25 @@ public class SquirrelAgent : Agent
         {
             rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
             energy += energyRestoreRate;
-
-            if (energy < lowEnergyThreshold)
-                AddReward(goodRestReward);
-            else if (hunger > highHungerThreshold)
-                AddReward(-unnecessaryRestPenalty);
         }
 
         hunger = Mathf.Clamp01(hunger + hungerRate);
         energy = Mathf.Clamp01(energy);
-        fear   = Mathf.Clamp01(fear - fearDecayRate * (isInSafeZone ? safeZoneFearDecayMultiplier : 1f));
+        float fearMultiplier = isInSafeZone ? safeZoneFearDecayMultiplier
+            : IsNearSafeZone(safeZoneProximityRadius) ? safeZoneProximityDecayMultiplier
+            : 1f;
+        fear = Mathf.Clamp01(fear - fearDecayRate * fearMultiplier);
 
         TotalDistance += Vector3.Distance(transform.position, lastPosition);
         lastPosition   = transform.position;
+        SurvivalTime  += Time.fixedDeltaTime;
+
+        // Homeostasis reward: current wellbeing each step
+        float wellbeing = (1f - hunger) * hungerWeight + energy * energyWeight + (1f - fear) * fearWeight;
+        AddReward(wellbeing * wellbeingScale * 0.0003f);
 
         AddReward(-stepPenalty);
-
-        // Reward shaping: getting closer to nearest acorn (suppressed when scared)
-        float currDist = DistanceToNearestAcorn();
-        if (prevDistToAcorn > 0f && currDist > 0f)
-        {
-            float approachScale = fear > highFearThreshold
-                ? acornApproachRewardScale * acornFearMultiplier
-                : acornApproachRewardScale;
-            AddReward((prevDistToAcorn - currDist) * approachScale);
-        }
-        prevDistToAcorn = currDist;
-
-        if (hunger > highHungerThreshold) AddReward(-hungryPenalty);
-        if (energy < lowEnergyThreshold) AddReward(-lowEnergyPenalty);
-        if (fear > highFearThreshold) AddReward(-fearPenalty * fear);
-        if (isInSafeZone && fear > highFearThreshold) AddReward(safeZoneFearReliefReward);
-
-        // Approach shaping: reward getting closer to safezone when scared
-        if (fear > highFearThreshold && !isInSafeZone)
-        {
-            float currSafeDist = DistanceToNearestByTag("Safezone", 200f);
-            if (prevDistToSafeZone > 0f && currSafeDist > 0f)
-                AddReward((prevDistToSafeZone - currSafeDist) * safeZoneApproachRewardScale);
-            prevDistToSafeZone = currSafeDist;
-        }
-        else
-        {
-            prevDistToSafeZone = -1f;
-        }
-
-        float obstacleDist = DistanceToNearestByTag("Obstacle", visionRadius);
-        if (obstacleDist > 0f && obstacleDist < obstacleProximityPenaltyDistance)
-        {
-            float closeness = 1f - obstacleDist / obstacleProximityPenaltyDistance;
-            AddReward(-obstacleProximityPenalty * closeness);
-        }
+        AddReward(survivalBonus);
 
         if (energy <= terminalEnergyThreshold || hunger >= terminalHungerThreshold)
         {
@@ -415,13 +377,12 @@ public class SquirrelAgent : Agent
             AcornsCollected++;
             hunger = Mathf.Max(0f, hunger - acornHungerReduction);
             energy = Mathf.Min(1f, energy + acornEnergyBonus);
-            AddReward(fear > highFearThreshold ? acornReward * acornFearMultiplier : acornReward);
             other.GetComponent<Acorn>()?.OnCollected();
         }
         else if (other.CompareTag("Safezone"))
         {
             isInSafeZone = true;
-            if (fear > highFearThreshold) AddReward(safeZoneEntryReward);
+            SafeZoneEntries++;
         }
         else if (other.CompareTag("Obstacle"))
         {
@@ -464,13 +425,11 @@ public class SquirrelAgent : Agent
         {
             fear = Mathf.Min(1f, fear + 0.2f);
             energy = Mathf.Max(0f, energy - 0.02f);
-            AddReward(-0.1f);
             return;
         }
 
         fear = Mathf.Min(1f, fear + obstacle.fearIncrease);
         energy = Mathf.Max(0f, energy - obstacle.energyPenalty);
-        AddReward(-obstacle.collisionPenalty);
     }
 
     private float DistanceToNearestAcorn()
@@ -491,6 +450,17 @@ public class SquirrelAgent : Agent
         return minDist;
     }
 
+    private bool IsNearSafeZone(float radius)
+    {
+        foreach (Transform sz in knownSafeZones)
+        {
+            if (sz == null) continue;
+            if (Vector3.Distance(transform.position, sz.position) <= radius)
+                return true;
+        }
+        return false;
+    }
+
     public void IncreaseFear(float amount)
     {
         fear = Mathf.Clamp01(fear + Mathf.Max(0f, amount));
@@ -498,6 +468,7 @@ public class SquirrelAgent : Agent
 
     public void CaughtByPredator()
     {
+        CaughtByPredatorFlag = true;
         AddReward(-caughtByPredatorPenalty);
         SimulationManager.Instance?.OnAgentEpisodeEnd(this);
         EndEpisode();

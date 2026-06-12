@@ -4,8 +4,8 @@ behaviors:
     hyperparameters:
       batch_size: 512
       buffer_size: 8192
-      learning_rate: 3.0e-4
-      beta: 5.0e-3        # entropy coefficient — keeps exploration alive
+      learning_rate: 1.0e-4
+      beta: 2.0e-3        # entropy coefficient — keeps exploration alive
       epsilon: 0.2
       lambd: 0.95
       num_epoch: 3
@@ -19,7 +19,7 @@ behaviors:
         gamma: 0.99
         strength: 1.0
     keep_checkpoints: 10
-    max_steps: 3_000_000
+    max_steps: 1_500_000
     time_horizon: 256
     summary_freq: 5000
     checkpoint_interval: 50000

@@ -9,7 +9,7 @@ public class AcornSpawner : MonoBehaviour
     public Terrain terrain;
 
     [Header("Parameters")]
-    public int   maxAcorns     = 80;
+    public int   maxAcorns     = 15;
     public float spawnRadius   = 25f;
     public float respawnDelay  = 5f;
     public float heightOffset  = 0.3f;

@@ -5,6 +5,9 @@ public class SimulationManager : MonoBehaviour
 {
     public static SimulationManager Instance { get; private set; }
 
+    [Header("Evaluation")]
+    public float evalTimeScale = 1f;
+
     [Header("Scene References")]
     public List<SquirrelAgent> agents;
     public AcornSpawner acornSpawner;
@@ -17,6 +20,7 @@ public class SimulationManager : MonoBehaviour
         else { Destroy(gameObject); return; }
 
         Application.runInBackground = true;
+        Time.timeScale = evalTimeScale;
         metrics = GetComponent<MetricsRecorder>();
     }
 

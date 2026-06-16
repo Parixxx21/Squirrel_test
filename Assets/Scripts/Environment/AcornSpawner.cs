@@ -10,7 +10,7 @@ public class AcornSpawner : MonoBehaviour
 
     [Header("Parameters")]
     public int   maxAcorns     = 15;
-    public float spawnRadius   = 25f;
+    public float spawnRadius   = 45f;
     public float respawnDelay  = 5f;
     public float heightOffset  = 0.3f;
 

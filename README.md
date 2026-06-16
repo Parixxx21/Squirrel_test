@@ -1,6 +1,6 @@
 # Multi-Agent Squirrel Foraging Simulation
 
-A reinforcement learning simulation of squirrel foraging behavior in a 3D terrain environment, built with Unity 6 and Unity ML-Agents.
+A reinforcement learning simulation of squirrel foraging behavior in a 3D terrain environment, built with Unity 6 and Unity ML-Agents. The agent uses a **homeostatic reward function** — behavior emerges from internal state maintenance rather than hand-crafted reward shaping.
 
 ## Requirements
 
@@ -57,12 +57,17 @@ from packaging.version import Version as StrictVersion
 ```bash
 conda activate mlagents
 cd <project-folder>
-mlagents-learn Assets/ML-Agents/Config/squirrel_ppo.yaml --run-id=run1 --time-scale 20
+mlagents-learn Assets/ML-Agents/Config/squirrel_ppo.yaml --run-id=run1 --time-scale 50
 ```
 
 Then press **Play** in Unity Editor after seeing:
 ```
 [INFO] Listening on port 5004
+```
+
+To resume or fine-tune from a previous run:
+```bash
+mlagents-learn Assets/ML-Agents/Config/squirrel_ppo.yaml --run-id=run2 --initialize-from=run1 --time-scale 50
 ```
 
 ## Loading a Trained Model
@@ -73,6 +78,10 @@ Then press **Play** in Unity Editor after seeing:
 4. Set **Behavior Type** to `Inference Only`
 5. Press Play
 
+Pre-trained models are in `Assets/ML-Agents/`. The project explores two reward formulations:
+- **Explicit reward shaping** — direct rewards for acorn collection and safe-zone entry
+- **Homeostatic reward** — reward derived entirely from internal state (hunger, energy, fear); behaviors emerge without hand-coded incentives
+
 ## Monitoring Training
 
 ```bash
@@ -82,61 +91,74 @@ tensorboard --logdir results
 
 Open `http://localhost:6006` in your browser.
 
+## Reward Design
+
+The squirrel maintains three internal state variables:
+
+| Variable | Range | Meaning |
+|----------|-------|---------|
+| Hunger `H` | 0–1 | 1 = starving |
+| Energy `E` | 0–1 | 1 = full energy |
+| Fear `F` | 0–1 | 1 = terrified |
+
+Per-step reward is computed from overall wellbeing:
+
+```
+W = (1 - H) * w_h  +  E * w_e  +  (1 - F) * w_f
+reward = W * scale * 0.0003  +  survivalBonus  -  stepPenalty
+```
+
+No explicit reward is given for collecting acorns or entering safe zones — these behaviors emerge because they improve internal state:
+- Acorn collected → hunger decreases → wellbeing increases
+- Safe zone entered → fear decays 5× faster → wellbeing increases
+- Predator nearby → fear increases → wellbeing decreases
+
+## Evaluation Results (50 episodes)
+
+| Metric | Explicit Reward | Homeostatic Reward |
+|--------|----------------|--------------------|
+| Avg Acorns Collected | 9.04 | 14.28 |
+| Avg Survival Time (s) | 57.87 | 142.7 |
+| Catch Rate | 72% | 34% |
+| Avg SafeZone Entries | 0.70 | 2.16 |
+
+The homeostatic formulation outperforms explicit reward shaping on all metrics. SafeZone-seeking behavior emerges without any direct reward signal for safe-zone entry.
+
+## Metrics Recording
+
+Episode metrics are written to `Metrics/results.csv` automatically during Play mode.  
+Columns: `Episode, AcornsCollected, TotalDistance, Collisions, SafeZoneEntries, SurvivalTime, CaughtByPredator, FinalHunger, FinalEnergy, FinalFear, CumulativeReward`
+
+To speed up evaluation, set `Eval Time Scale` on the `SimulationManager` GameObject in the Inspector (e.g. 20). Reset to 1 after evaluation.
+
 ## Project Structure
 
 ```
 Assets/
 ├── ML-Agents/
-│   └── Config/squirrel_ppo.yaml   # PPO training config
-├── Prefabs/
-│   └── Acorn.prefab
+│   ├── Config/squirrel_ppo.yaml       # PPO training config
+│   └── Squirrel-*.onnx                # trained model checkpoints
 ├── Scenes/
 │   └── ForagingScene.unity
 └── Scripts/
     ├── Agents/
-    │   ├── SquirrelAgent.cs        # RL agent (observations, actions, rewards)
-    │   └── SquirrelAnimator.cs     # Procedural animation
+    │   ├── SquirrelAgent.cs           # RL agent — homeostatic reward
+    │   ├── SquirrelAnimator.cs        # procedural animation
+    │   └── PredatorAgent.cs           # rule-based fox predator
     ├── Environment/
     │   ├── Acorn.cs
-    │   ├── AcornSpawner.cs
+    │   ├── AcornSpawner.cs            # maxAcorns configurable
+    │   ├── Obstacle.cs                # Rock / DeepPit / Trash / MudPuddle
     │   └── SafeZone.cs
     └── Managers/
         ├── SimulationManager.cs
-        └── MetricsRecorder.cs
+        └── MetricsRecorder.cs         # CSV episode logging
+Metrics/
+└── results.csv                        # evaluation output
+results/
+├── run11/                             # training checkpoints
+└── run12/                             # ablation checkpoints
 ```
-
-## TODO / Roadmap
-
-### Environment
-- [ ] Expand terrain size (currently 50×50, consider 100×100 or larger)
-- [ ] Add obstacles (rocks, trees) with Obstacle tag
-- [ ] Add safe zones (tree hollows, bushes) with Safezone tag
-- [ ] Add terrain textures (grass, dirt, rock)
-- [ ] Add trees using Unity Terrain tree system
-
-### Agent & RL
-- [ ] Multi-agent expansion (3–5 squirrels in same scene)
-- [ ] Fear mechanic: nearby squirrels increase fear, triggering safe-zone seeking
-- [ ] Memory (LSTM): add to squirrel_ppo.yaml so agent remembers past positions
-- [ ] Increase vision radius (currently 10m) to match larger terrain
-- [ ] Rule-based baseline agent for comparison
-
-### Training & Experiments
-- [ ] Continue training run4 to 1M steps (currently ~400k)
-- [ ] Run experiments with different acorn densities
-- [ ] Run experiments with different number of agents
-- [ ] Record metrics: acorns collected, travel distance, collisions, energy use
-
-### Visualization & Demo
-- [ ] Add squirrel animations (walk/idle cycles)
-- [ ] Add visual indicators for hunger/energy/fear (UI bars or color changes)
-- [ ] Record demo video of trained behavior
-- [ ] TensorBoard reward curve plots for report
-
-### Report
-- [ ] Methods section: environment design, observation space, reward function
-- [ ] Results section: training curves, behavior analysis
-- [ ] Comparison: RL vs rule-based baseline
 
 ## Credits
 

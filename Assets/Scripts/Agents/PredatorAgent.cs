@@ -4,18 +4,18 @@ using UnityEngine;
 public class PredatorAgent : MonoBehaviour
 {
     [Header("Movement")]
-    public float moveSpeed = 2.0f;
+    public float moveSpeed = 4.0f;
     public float wanderSpeedMultiplier = 0.5f;
     public float turnSpeed = 180f;
 
     [Header("Detection")]
-    public float detectionRadius = 50f;
+    public float detectionRadius = 25f;
 
     [Header("Fear")]
     public float fearRadius = 22f;
-    public float fearIncreaseRate = 0.6f;
+    public float fearIncreaseRate = 0.4f;
     public float catchRadius = 2.5f;
-    public float stopDistanceToTarget = 1.5f;
+    public float stopDistanceToTarget = 2.8f;
 
     [Header("Avoidance")]
     public float predatorAvoidRadius = 2.0f;
@@ -26,7 +26,7 @@ public class PredatorAgent : MonoBehaviour
     [Header("Boundary")]
     public Terrain terrain;
     public float boundaryMargin = 3f;
-    public float heightOffset = 0.3f;
+    public float heightOffset = 0.8f;
 
     [Header("Stuck Detection")]
     public float stuckCheckInterval = 8f;

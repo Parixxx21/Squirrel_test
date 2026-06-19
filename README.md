@@ -2,6 +2,8 @@
 
 A reinforcement learning simulation of squirrel foraging behavior in a 3D terrain environment, built with Unity 6 and Unity ML-Agents.
 
+**Reward approach on this branch: State-Based Homeostatic Reward** — the squirrel agent receives no explicit reward for collecting acorns or entering safe zones. All behavior emerges from maintaining internal physiological state (hunger, energy, fear).
+
 ## Requirements
 
 - Unity Hub + **Unity 6000.4.6f1** (version must match exactly)
@@ -52,17 +54,45 @@ from packaging.version import Version as StrictVersion
 - `.version[0]` → `.major`
 - `.version[1]` → `.minor`
 
+## Reward Design (State-Based Homeostatic)
+
+The squirrel maintains three internal state variables updated every step:
+
+| Variable | Range | Meaning |
+|----------|-------|---------|
+| Hunger `H` | 0–1 | 1 = starving |
+| Energy `E` | 0–1 | 1 = full energy |
+| Fear `F` | 0–1 | 1 = terrified |
+
+Per-step reward is derived from overall wellbeing:
+
+```
+W = (1 - H) * w_h  +  E * w_e  +  (1 - F) * w_f
+reward = W * wellbeingScale * 0.0003  +  survivalBonus  -  stepPenalty
+```
+
+Behaviors emerge naturally without explicit shaping:
+- Acorn collected → hunger decreases → wellbeing increases
+- Safe zone entered → fear decays 5× faster → wellbeing increases
+- Predator nearby → fear increases → wellbeing decreases
+- Obstacle collision → fear/energy penalized → wellbeing decreases
+
 ## Running Training
 
 ```bash
 conda activate mlagents
 cd <project-folder>
-mlagents-learn Assets/ML-Agents/Config/squirrel_ppo.yaml --run-id=run1 --time-scale 20
+mlagents-learn Assets/ML-Agents/Config/squirrel_ppo.yaml --run-id=run1 --time-scale 50
 ```
 
 Then press **Play** in Unity Editor after seeing:
 ```
 [INFO] Listening on port 5004
+```
+
+To resume from a checkpoint:
+```bash
+mlagents-learn Assets/ML-Agents/Config/squirrel_ppo.yaml --run-id=run2 --initialize-from=run1 --time-scale 50
 ```
 
 ## Loading a Trained Model
@@ -72,6 +102,10 @@ Then press **Play** in Unity Editor after seeing:
 3. In Inspector → **Behavior Parameters → Model**: drag in the `.onnx` file
 4. Set **Behavior Type** to `Inference Only`
 5. Press Play
+
+Pre-trained models are available in `Assets/ML-Agents/`:
+- `Squirrel-run12.onnx` — **final model** used for evaluation (homeostatic reward, acorns=15)
+- `Squirrel-run11.onnx` — prior checkpoint (acorns=80)
 
 ## Monitoring Training
 
@@ -87,57 +121,21 @@ Open `http://localhost:6006` in your browser.
 ```
 Assets/
 ├── ML-Agents/
-│   └── Config/squirrel_ppo.yaml   # PPO training config
-├── Prefabs/
-│   └── Acorn.prefab
+│   ├── Config/squirrel_ppo.yaml       # PPO training config
+│   └── Squirrel-*.onnx                # trained model checkpoints
 ├── Scenes/
 │   └── ForagingScene.unity
 └── Scripts/
     ├── Agents/
-    │   ├── SquirrelAgent.cs        # RL agent (observations, actions, rewards)
-    │   └── SquirrelAnimator.cs     # Procedural animation
+    │   ├── SquirrelAgent.cs           # RL agent — homeostatic reward
+    │   ├── SquirrelAnimator.cs        # procedural animation
+    │   └── PredatorAgent.cs           # rule-based fox predator
     ├── Environment/
-    │   ├── Acorn.cs
-    │   ├── AcornSpawner.cs
+    │   ├── Acorn.cs / AcornSpawner.cs
+    │   ├── Obstacle.cs / ObstacleSpawner.cs
     │   └── SafeZone.cs
     └── Managers/
-        ├── SimulationManager.cs
-        └── MetricsRecorder.cs
+        ├── SimulationManager.cs       # evalTimeScale field for fast evaluation
+        └── MetricsRecorder.cs         # writes Metrics/results.csv
 ```
 
-## TODO / Roadmap
-
-### Environment
-- [ ] Expand terrain size (currently 50×50, consider 100×100 or larger)
-- [ ] Add obstacles (rocks, trees) with Obstacle tag
-- [ ] Add safe zones (tree hollows, bushes) with Safezone tag
-- [ ] Add terrain textures (grass, dirt, rock)
-- [ ] Add trees using Unity Terrain tree system
-
-### Agent & RL
-- [ ] Multi-agent expansion (3–5 squirrels in same scene)
-- [ ] Fear mechanic: nearby squirrels increase fear, triggering safe-zone seeking
-- [ ] Memory (LSTM): add to squirrel_ppo.yaml so agent remembers past positions
-- [ ] Increase vision radius (currently 10m) to match larger terrain
-- [ ] Rule-based baseline agent for comparison
-
-### Training & Experiments
-- [ ] Continue training run4 to 1M steps (currently ~400k)
-- [ ] Run experiments with different acorn densities
-- [ ] Run experiments with different number of agents
-- [ ] Record metrics: acorns collected, travel distance, collisions, energy use
-
-### Visualization & Demo
-- [ ] Add squirrel animations (walk/idle cycles)
-- [ ] Add visual indicators for hunger/energy/fear (UI bars or color changes)
-- [ ] Record demo video of trained behavior
-- [ ] TensorBoard reward curve plots for report
-
-### Report
-- [ ] Methods section: environment design, observation space, reward function
-- [ ] Results section: training curves, behavior analysis
-- [ ] Comparison: RL vs rule-based baseline
-
-## Credits
-
-Squirrel 3D model: "Low poly squirrel" by ClydeXYZ on Sketchfab (CC Attribution)

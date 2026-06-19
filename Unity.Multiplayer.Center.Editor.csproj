@@ -42,8 +42,8 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Library/PackageCache/com.unity.multiplayer.center@f01f4ba8d00a/Editor/Recommendations/RecommenderSystemDataObject.cs" />
-     <Compile Include="Library/PackageCache/com.unity.multiplayer.center@f01f4ba8d00a/Editor/Features/PackageManagement.cs" />
      <Compile Include="Library/PackageCache/com.unity.multiplayer.center@f01f4ba8d00a/Editor/Recommendations/Scoring.cs" />
+     <Compile Include="Library/PackageCache/com.unity.multiplayer.center@f01f4ba8d00a/Editor/Features/PackageManagement.cs" />
      <Compile Include="Library/PackageCache/com.unity.multiplayer.center@f01f4ba8d00a/Editor/Recommendations/RecommenderSystem.cs" />
      <Compile Include="Library/PackageCache/com.unity.multiplayer.center@f01f4ba8d00a/Editor/MultiplayerCenterWindow/UI/QuestionnaireView.cs" />
      <Compile Include="Library/PackageCache/com.unity.multiplayer.center@f01f4ba8d00a/Editor/MultiplayerCenterWindow/UI/RecommendationView/RecommendationView.cs" />

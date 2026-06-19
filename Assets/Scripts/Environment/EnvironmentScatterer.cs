@@ -153,6 +153,7 @@ public class EnvironmentScatterer : MonoBehaviour
         GameObject instance = Instantiate(prefab, position, Quaternion.Euler(0f, Random01(random) * 360f, 0f), root);
         instance.name = objectName;
         instance.transform.localScale = Vector3.one * scale;
+        FoliageMaterialEnhancer.Enhance(instance);
 
         if (!disableGeneratedColliders) return;
 

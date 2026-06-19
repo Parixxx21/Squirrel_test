@@ -73,6 +73,8 @@ public class SquirrelAgent : Agent
     public int   SafeZoneEntries  { get; private set; }
     public bool  CaughtByPredatorFlag { get; private set; }
     public float SurvivalTime     { get; private set; }
+    public bool  IsInSafeZone     => isInSafeZone;
+    public bool  IsResting        => isResting;
 
     public override void Initialize()
     {

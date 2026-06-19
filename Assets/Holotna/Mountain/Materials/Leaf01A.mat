@@ -125,9 +125,9 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Bend_Direction: {r: 1, g: 1, b: 0, a: 0}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.16, g: 0.50, b: 0.12, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Primary_Color: {r: 0.1764706, g: 0.42352942, b: 0.050980393, a: 1}
-    - _Secondary_Color: {r: 0.25490198, g: 0.20392157, b: 0.10980392, a: 1}
+    - _Primary_Color: {r: 0.16, g: 0.50, b: 0.12, a: 1}
+    - _Secondary_Color: {r: 0.30, g: 0.64, b: 0.18, a: 1}
     - _Tertiary_Color: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

@@ -26,7 +26,7 @@ public class PredatorAgent : MonoBehaviour
     [Header("Boundary")]
     public Terrain terrain;
     public float boundaryMargin = 3f;
-    public float heightOffset = 0.3f;
+    public float heightOffset = 0.25f;
 
     [Header("Stuck Detection")]
     public float stuckCheckInterval = 8f;

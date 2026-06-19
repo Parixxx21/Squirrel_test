@@ -97,12 +97,12 @@ Material:
     - _ZWrite: 1
     - __dirty: 0
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorMultiply: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorOverride: {r: 1, g: 1, b: 1, a: 0}
+    - _Color: {r: 0.16, g: 0.50, b: 0.12, a: 1}
+    - _ColorMultiply: {r: 0.16, g: 0.50, b: 0.12, a: 1}
+    - _ColorOverride: {r: 0.16, g: 0.50, b: 0.12, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _HColor: {r: 0.6506951, g: 0.6544118, b: 0.58704585, a: 1}
+    - _HColor: {r: 0.30, g: 0.64, b: 0.18, a: 1}
     - _RimColor: {r: 0, g: 0, b: 0, a: 0}
-    - _SColor: {r: 0.16243884, g: 0.1401384, b: 0.17647058, a: 1}
+    - _SColor: {r: 0.07, g: 0.22, b: 0.05, a: 1}
     - _SpecColor: {r: 0, g: 0, b: 0, a: 1}
     - _SwayDir: {r: 0.01, g: 0, b: 0, a: 0}

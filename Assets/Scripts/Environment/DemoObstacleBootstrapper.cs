@@ -123,7 +123,7 @@ public static class DemoObstacleBootstrapper
 
     private static void CreateRock(Transform parent, Terrain terrain, Vector3 position, float scale, float yaw)
     {
-        GameObject rock = CreateObstacleRoot(parent, "Rock", terrain, position, 0.15f, yaw);
+        GameObject rock = CreateObstacleRoot(parent, "Rock", terrain, position, 0f, yaw);
 
         SphereCollider collider = rock.AddComponent<SphereCollider>();
         collider.radius = 0.85f * scale;
@@ -151,7 +151,7 @@ public static class DemoObstacleBootstrapper
 
     private static void CreateTrash(Transform parent, Terrain terrain, Vector3 position, float scale, float yaw)
     {
-        GameObject trash = CreateObstacleRoot(parent, "Trash", terrain, position, 0.15f, yaw);
+        GameObject trash = CreateObstacleRoot(parent, "Trash", terrain, position, 0f, yaw);
 
         BoxCollider collider = trash.AddComponent<BoxCollider>();
         collider.size = new Vector3(1.8f, 0.9f, 1.2f) * scale;

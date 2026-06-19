@@ -9,6 +9,9 @@ public class Acorn : MonoBehaviour
     {
         gameObject.tag = "Acorn";
         GetComponent<Collider>().isTrigger = true;
+
+        if (GetComponent<AcornVisual>() == null)
+            gameObject.AddComponent<AcornVisual>();
     }
 
     public void OnCollected()
